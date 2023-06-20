@@ -30,6 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('competitions/categories')->group(function () {
         Route::post('', [CompetitionCategoryController::class, 'store']);
     });
+
+    Route::prefix('competitions/categories/{categoryId}')->group(function () {
+        Route::put('', [CompetitionCategoryController::class, 'update']);
+    });
 });
 
 Route::get('competitions/categories', [CompetitionCategoryController::class, 'index']);
