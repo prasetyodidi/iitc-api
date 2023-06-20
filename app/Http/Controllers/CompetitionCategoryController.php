@@ -5,10 +5,33 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCompetitionCategoryRequest;
 use App\Models\CompetitionCategory;
 use Exception;
-use Illuminate\Http\Request;
 
 class CompetitionCategoryController extends Controller
 {
+    public function index()
+    {
+        try {
+            $categories = CompetitionCategory::all();
+
+            $responseData = [
+                'status' => 0,
+                'message' => 'Succeed create new competition category',
+                'data' => [
+                    'categories' => $categories,
+                ],
+            ];
+
+            return response()->json($responseData, 200);
+        } catch (Exception $exception) {
+            $responseData = [
+                'status' => 0,
+                'message' => 'Failed get all competition categories',
+            ];
+
+            return response()->json($responseData, 400);
+        }
+    }
+
     public function store(StoreCompetitionCategoryRequest $request)
     {
         try {
