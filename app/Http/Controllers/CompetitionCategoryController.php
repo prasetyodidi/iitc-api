@@ -75,7 +75,7 @@ class CompetitionCategoryController extends Controller
 
             $responseData = [
                 'status' => 0,
-                'message' => 'Succeed create new competition category',
+                'message' => 'Succeed update competition category',
                 'data' => [
                     'category' => $competitionCategory,
                 ],
@@ -86,6 +86,32 @@ class CompetitionCategoryController extends Controller
             $responseData = [
                 'status' => 0,
                 'message' => 'Failed update competition category',
+            ];
+
+            return response()->json($responseData, 400);
+        }
+    }
+
+    public function delete(string $categoryId)
+    {
+        try {
+            $competitionCategory = CompetitionCategory::where('id', $categoryId)->firstOrFail();
+
+            $competitionCategory->delete();
+
+            $responseData = [
+                'status' => 0,
+                'message' => 'Succeed delete competition category',
+                'data' => [
+                    'category' => $competitionCategory,
+                ],
+            ];
+
+            return response()->json($responseData, 200);
+        } catch (Exception $exception) {
+            $responseData = [
+                'status' => 0,
+                'message' => 'Failed delete competition category',
             ];
 
             return response()->json($responseData, 400);

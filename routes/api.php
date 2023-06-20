@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('competitions/categories/{categoryId}')->group(function () {
         Route::put('', [CompetitionCategoryController::class, 'update']);
+        Route::delete('', [CompetitionCategoryController::class, 'delete']);
     });
 });
 
