@@ -37,7 +37,7 @@ class LoginController extends Controller
         }catch (Exception $exception) {
             $data = [
                 "status" => 0,
-                "message" => "user not found",
+                "message" => $exception->getMessage(),
             ];
             return response()->json($data, 404);
         }

@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\CompetitionCategoryController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\NewPasswordController;
 use App\Http\Controllers\PasswordResetLinkController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\VerifyEmailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,16 +29,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [LogoutController::class, 'store']);
 
     Route::prefix('competitions/categories')->group(function () {
-        Route::post('', [CompetitionCategoryController::class, 'store']);
+        Route::post('', [CategoryController::class, 'store']);
     });
 
     Route::prefix('competitions/categories/{categoryId}')->group(function () {
-        Route::put('', [CompetitionCategoryController::class, 'update']);
-        Route::delete('', [CompetitionCategoryController::class, 'delete']);
+        Route::put('', [CategoryController::class, 'update']);
+        Route::delete('', [CategoryController::class, 'destroy']);
     });
+
+    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
 });
 
-Route::get('competitions/categories', [CompetitionCategoryController::class, 'index']);
+Route::get('competitions/categories', [CategoryController::class, 'index']);
 
 Route::post('login', [LoginController::class, 'store'])->name('login');
 Route::post('register', [RegisterController::class, 'store'])->name('register');
