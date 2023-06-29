@@ -17,6 +17,8 @@ class RegisterController extends Controller
                 "name" => $request->fullName,
                 "email" => $request->email,
                 "password" => Hash::make($request->password),
+                "phone" => $request->phone,
+                "avatar" => 'user/avatar/default.png',
             ];
             $user = User::create($data);
 
@@ -34,7 +36,7 @@ class RegisterController extends Controller
         } catch (Exception $exception) {
             $data = [
                 "status" => 0,
-                "message" => "register fail",
+                "message" => $exception->getMessage(),
             ];
             return response()->json($data, 400);
         }
