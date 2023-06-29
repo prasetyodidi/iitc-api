@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRegisterRequest;
 use App\Models\User;
 use Exception;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,11 +28,13 @@ class RegisterController extends Controller
                 "message" => "Success registering new user",
                 "data" => [
                     "user" => [
+                        "id" => $user->id,
                         "fullName" => $user->name,
                         "email" => $user->email,
                     ],
                 ],
             ];
+
             return response()->json($responseData, 201);
         } catch (Exception $exception) {
             $data = [
