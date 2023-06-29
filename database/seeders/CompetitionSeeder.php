@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\CompetitionCategory;
+use App\Models\Competition;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class CompetitionCategorySeeder extends Seeder
+class CompetitionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        CompetitionCategory::factory(3)->create();
+        Competition::factory(10)->create();
     }
 }

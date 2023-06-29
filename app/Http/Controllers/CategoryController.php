@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCompetitionCategoryRequest;
-use App\Http\Requests\UpdateCompetitionCategoryRequest;
-use App\Models\CompetitionCategory;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\Category;
 use Exception;
+use Illuminate\Http\JsonResponse;
 
-class CompetitionCategoryController extends Controller
+class CategoryController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
         try {
-            $categories = CompetitionCategory::all();
+            $categories = Category::all();
 
             $responseData = [
                 'status' => 1,
@@ -33,14 +34,14 @@ class CompetitionCategoryController extends Controller
         }
     }
 
-    public function store(StoreCompetitionCategoryRequest $request)
+    public function store(StoreCategoryRequest $request)
     {
         try {
             $data = [
                 'name' => $request->name,
             ];
 
-            $category = CompetitionCategory::query()->create($data);
+            $category = Category::query()->create($data);
 
             $responseData = [
                 'status' => 0,
@@ -61,10 +62,10 @@ class CompetitionCategoryController extends Controller
         }
     }
 
-    public function update(UpdateCompetitionCategoryRequest $request, string $categoryId)
+    public function update(UpdateCategoryRequest $request, string $categoryId): JsonResponse
     {
         try {
-            $competitionCategory = CompetitionCategory::where('id', $categoryId)->firstOrFail();
+            $competitionCategory = Category::where('id', $categoryId)->firstOrFail();
 
 
             $data = [
@@ -92,10 +93,10 @@ class CompetitionCategoryController extends Controller
         }
     }
 
-    public function delete(string $categoryId)
+    public function destroy(string $categoryId): JsonResponse
     {
         try {
-            $competitionCategory = CompetitionCategory::where('id', $categoryId)->firstOrFail();
+            $competitionCategory = Category::where('id', $categoryId)->firstOrFail();
 
             $competitionCategory->delete();
 
