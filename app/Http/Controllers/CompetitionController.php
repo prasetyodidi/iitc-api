@@ -108,12 +108,30 @@ class CompetitionController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Competition $competition)
+    public function show(string $slug): JsonResponse
     {
-        //
+        try {
+            $competition = Competition::with(['criterias:id,competition_id,name', 'techStacks:id,competition_id,name'])
+                ->where('slug', $slug)
+                ->firstOrFail();
+
+            $responseData = [
+                'status' => 1,
+                'message' => 'Succeed create new competition',
+                'data' => [
+                    'competition' => $competition,
+                ],
+            ];
+
+            return response()->json($responseData, 201);
+        } catch (Exception $exception) {
+            $responseData = [
+                'status' => 0,
+                'message' => $exception->getMessage(),
+            ];
+
+            return response()->json($responseData, 400);
+        }
     }
 
     /**

@@ -24,6 +24,11 @@ class Competition extends Model
         return $this->hasMany(Criteria::class);
     }
 
+    public function techStacks(): HasMany
+    {
+        return $this->hasMany(TechStack::class);
+    }
+
     public function sluggable(): array
     {
         return [
