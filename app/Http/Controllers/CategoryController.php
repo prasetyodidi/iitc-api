@@ -44,7 +44,7 @@ class CategoryController extends Controller
             $category = Category::query()->create($data);
 
             $responseData = [
-                'status' => 0,
+                'status' => 1,
                 'message' => 'Succeed create new competition category',
                 'data' => [
                     'category' => $category,
@@ -75,7 +75,7 @@ class CategoryController extends Controller
             $competitionCategory->update($data);
 
             $responseData = [
-                'status' => 0,
+                'status' => 1,
                 'message' => 'Succeed update competition category',
                 'data' => [
                     'category' => $competitionCategory,
@@ -101,7 +101,7 @@ class CategoryController extends Controller
             $competitionCategory->delete();
 
             $responseData = [
-                'status' => 0,
+                'status' => 1,
                 'message' => 'Succeed delete competition category',
                 'data' => [
                     'category' => $competitionCategory,

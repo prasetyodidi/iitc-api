@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\NewPasswordController;
@@ -28,9 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [LogoutController::class, 'store']);
 
-    Route::prefix('competitions/categories')->group(function () {
-        Route::post('', [CategoryController::class, 'store']);
-    });
+    Route::post('competitions/categories', [CategoryController::class, 'store']);
 
     Route::prefix('competitions/categories/{categoryId}')->group(function () {
         Route::put('', [CategoryController::class, 'update']);
@@ -40,9 +39,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
+
+    Route::prefix('competitions/{slug}')->group(function () {
+        // using method put, request body not working
+        Route::post('', [CompetitionController::class, 'update']);
+        Route::delete('', [CompetitionController::class, 'destroy']);
+    });
+    Route::post('competitions', [CompetitionController::class, 'store']);
 });
 
 Route::get('competitions/categories', [CategoryController::class, 'index']);
+Route::get('competitions', [CompetitionController::class, 'index']);
+Route::get('competitions/{slug}', [CompetitionController::class, 'show']);
 
 Route::post('login', [LoginController::class, 'store'])->name('login');
 Route::post('register', [RegisterController::class, 'store'])->name('register');

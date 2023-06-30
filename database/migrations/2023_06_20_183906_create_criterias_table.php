@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('competitions', function (Blueprint $table) {
+        Schema::create('criterias', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
+            $table->unsignedBigInteger('competition_id');
             $table->string('name');
-            $table->dateTime('deadline');
-            $table->unsignedInteger('max_members');
-            $table->unsignedInteger('price');
-            $table->text('description');
-            $table->string('guide_book');
+            $table->unsignedInteger('percentage');
             $table->timestamps();
+
+            $table->foreign('competition_id')->references('id')->on('competitions');
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('competitions');
+        Schema::dropIfExists('criterias');
     }
 };
