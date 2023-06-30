@@ -40,8 +40,11 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 
-    // using method put, request body not working
-    Route::post('competitions/{slug}', [CompetitionController::class, 'update']);
+    Route::prefix('competitions/{slug}')->group(function () {
+        // using method put, request body not working
+        Route::post('', [CompetitionController::class, 'update']);
+        Route::delete('', [CompetitionController::class, 'destroy']);
+    });
     Route::post('competitions', [CompetitionController::class, 'store']);
 });
 

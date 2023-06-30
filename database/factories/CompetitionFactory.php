@@ -17,7 +17,6 @@ class CompetitionFactory extends Factory
     public function definition(): array
     {
         return [
-            'slug' => fake()->userName,
             'name' => fake()->firstName,
             'deadline' => fake()->dateTime,
             'max_members' => fake()->numberBetween(3, 7),

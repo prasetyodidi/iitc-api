@@ -212,10 +212,25 @@ class CompetitionController extends Controller
         return $techStacksData;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Competition $competition)
+    public function destroy(string $slug): JsonResponse
     {
+        try {
+            $competition = Competition::query()->where('slug', $slug)->firstOrFail();
+            $competition->delete();
+
+            $responseData = [
+                'status' => 1,
+                'message' => 'Succeed delete competition',
+            ];
+
+            return response()->json($responseData, 200);
+        } catch (Exception $exception) {
+            $responseData = [
+                'status' => 0,
+                'message' => $exception->getMessage(),
+            ];
+
+            return response()->json($responseData, 400);
+        }
     }
 }
