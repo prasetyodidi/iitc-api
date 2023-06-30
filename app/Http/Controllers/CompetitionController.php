@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCompetitionRequest;
 use App\Http\Requests\UpdateCompetitionRequest;
 use App\Models\Competition;
+use Exception;
+use Illuminate\Http\JsonResponse;
 
 class CompetitionController extends Controller
 {
@@ -16,20 +18,39 @@ class CompetitionController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StoreCompetitionRequest $request): JsonResponse
     {
-        //
-    }
+        try {
+            $cover = $request->file('cover')->store('competition/avatar', ['disk' => 'public']);
+            $competitionData = [
+                'name' => $request->input('name'),
+                'deadline' => $request->input('deadline'),
+                'max_members' => $request->input('maxMembers'),
+                'price' => $request->input('price'),
+                'description' => $request->input('description'),
+                'guide_book' => $request->input('guideBookLink'),
+                'cover' => $cover,
+            ];
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreCompetitionRequest $request)
-    {
-        //
+            $competition = Competition::query()->create($competitionData);
+
+            $responseData = [
+                'status' => 0,
+                'message' => 'Succeed create new competition',
+                'data' => [
+                    'category' => $competition,
+                ],
+            ];
+
+            return response()->json($responseData, 201);
+        } catch (Exception $exception) {
+            $responseData = [
+                'status' => 0,
+                'message' => $exception->getMessage(),
+            ];
+
+            return response()->json($responseData, 400);
+        }
     }
 
     /**
