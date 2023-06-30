@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCompetitionRequest;
 use App\Http\Requests\UpdateCompetitionRequest;
+use App\Models\Category;
 use App\Models\Competition;
 use App\Models\Criteria;
 use App\Models\TechStack;
@@ -16,18 +17,17 @@ class CompetitionController extends Controller
     {
         try {
             $competitions = Competition::query()
-                ->with('criterias')
+                ->with('categories')
                 ->get()->map(function (Competition $competition) {
-                    $criterias = $competition->criterias->map(function (Criteria $criteria) {
+                    $categories = $competition->categories->map(function (Category $category) {
                        return [
-                           'id' => $criteria->id,
-                           'name' => $criteria->name
+                           'name' => $category->name
                        ];
                     });
                     return [
                         'name' => $competition->name,
                         'maxMembers' => $competition->max_members,
-                        'criterias' => $criterias
+                        'categories' => $categories
                     ];
                 });
 
