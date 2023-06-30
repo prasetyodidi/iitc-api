@@ -19,7 +19,7 @@ class Competition extends Model
         return $this->belongsToMany(Category::class);
     }
 
-    public function criterias(): HasMany
+    public function criteria(): HasMany
     {
         return $this->hasMany(Criteria::class);
     }

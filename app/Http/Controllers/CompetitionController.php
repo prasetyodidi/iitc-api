@@ -68,10 +68,10 @@ class CompetitionController extends Controller
 
             $competition = Competition::query()->create($competitionData);
 
-            $arrayCriterias = json_decode($request->criterias);
-            $criteriasData = [];
-            foreach ($arrayCriterias as $criteria) {
-                $criteriasData[] = [
+            $arrayCriteria = json_decode($request->criterias);
+            $criteriaData = [];
+            foreach ($arrayCriteria as $criteria) {
+                $criteriaData[] = [
                     'competition_id' => $competition->id,
                     'name' => $criteria->name,
                     'percentage' => $criteria->percentage,
@@ -85,10 +85,10 @@ class CompetitionController extends Controller
                     'name' => $techStack,
                 ];
             }
-            Criteria::query()->insert($criteriasData);
+            Criteria::query()->insert($criteriaData);
             TechStack::query()->insert($techStacksData);
 
-            $competition['criterias'] = $criteriasData;
+            $competition['criteria'] = $criteriaData;
             $competition['techStacks'] = $techStacksData;
             $responseData = [
                 'status' => 1,
@@ -112,7 +112,7 @@ class CompetitionController extends Controller
     public function show(string $slug): JsonResponse
     {
         try {
-            $competition = Competition::with(['criterias:id,competition_id,name', 'techStacks:id,competition_id,name'])
+            $competition = Competition::with(['criteria:id,competition_id,name', 'techStacks:id,competition_id,name'])
                 ->where('slug', $slug)
                 ->firstOrFail();
 
