@@ -21,7 +21,7 @@ class Competition extends Model
 
     public function criteria(): HasMany
     {
-        return $this->hasMany(Criteria::class);
+        return $this->hasMany(Criterion::class);
     }
 
     public function techStacks(): HasMany

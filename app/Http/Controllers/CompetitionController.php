@@ -6,7 +6,7 @@ use App\Http\Requests\StoreCompetitionRequest;
 use App\Http\Requests\UpdateCompetitionRequest;
 use App\Models\Category;
 use App\Models\Competition;
-use App\Models\Criteria;
+use App\Models\Criterion;
 use App\Models\TechStack;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -85,7 +85,7 @@ class CompetitionController extends Controller
                     'name' => $techStack,
                 ];
             }
-            Criteria::query()->insert($criteriaData);
+            Criterion::query()->insert($criteriaData);
             TechStack::query()->insert($techStacksData);
 
             $competition['criteria'] = $criteriaData;
@@ -155,13 +155,13 @@ class CompetitionController extends Controller
 
             $competition->update($competitionData);
 
-            Criteria::query()->where('competition_id', $competition->id)->delete();
+            Criterion::query()->where('competition_id', $competition->id)->delete();
             TechStack::query()->where('competition_id', $competition->id)->delete();
 
             $criteriaData = $this->getCriteriaToDatabase(json_decode($request->criterias), $competition->id);
             $techStacksData = $this->getTechStacksToDatabase(json_decode($request->techStacks), $competition->id);
 
-            Criteria::query()->insert($criteriaData);
+            Criterion::query()->insert($criteriaData);
             TechStack::query()->insert($techStacksData);
 
             $competition['criteria'] = $criteriaData;
