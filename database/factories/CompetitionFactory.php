@@ -23,7 +23,8 @@ class CompetitionFactory extends Factory
             'max_members' => fake()->numberBetween(3, 7),
             'price' => fake()->numerify('#####'),
             'description' => fake()->text(250),
-            'guide_book' => fake()->imageUrl
+            'guide_book' => fake()->imageUrl,
+            'cover' => fake()->imageUrl
         ];
     }
 }
