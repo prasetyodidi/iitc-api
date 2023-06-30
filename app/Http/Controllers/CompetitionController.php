@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCompetitionRequest;
 use App\Http\Requests\UpdateCompetitionRequest;
 use App\Models\Competition;
+use App\Models\Criteria;
+use App\Models\TechStack;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
@@ -34,11 +36,33 @@ class CompetitionController extends Controller
 
             $competition = Competition::query()->create($competitionData);
 
+            $arrayCriterias = json_decode($request->criterias);
+            $criteriasData = [];
+            foreach ($arrayCriterias as $criteria) {
+                $criteriasData[] = [
+                    'competition_id' => $competition->id,
+                    'name' => $criteria->name,
+                    'percentage' => $criteria->percentage,
+                ];
+            }
+            $arrayTechStacks = json_decode($request->techStacks);
+            $techStacksData = [];
+            foreach ($arrayTechStacks as $techStack) {
+                $techStacksData[] = [
+                    'competition_id' => $competition->id,
+                    'name' => $techStack,
+                ];
+            }
+            Criteria::query()->insert($criteriasData);
+            TechStack::query()->insert($techStacksData);
+
+            $competition['criterias'] = $criteriasData;
+            $competition['techStacks'] = $techStacksData;
             $responseData = [
-                'status' => 0,
+                'status' => 1,
                 'message' => 'Succeed create new competition',
                 'data' => [
-                    'category' => $competition,
+                    'competition' => $competition,
                 ],
             ];
 
