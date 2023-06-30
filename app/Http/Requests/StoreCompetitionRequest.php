@@ -33,8 +33,8 @@ class StoreCompetitionRequest extends FormRequest
             'techStacks.*' => 'required|string|max:255',
             'description' => 'required|string',
             'guideBookLink' => 'required|string|url',
-            'criterias.*.name' => 'string',
-            'criterias.*.percentage' => 'numeric'
+            'criteria.*.name' => 'string',
+            'criteria.*.percentage' => 'numeric'
         ];
     }
 }
