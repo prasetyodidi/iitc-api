@@ -12,12 +12,43 @@ use Illuminate\Http\JsonResponse;
 
 class CompetitionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        try {
+            $competitions = Competition::query()
+                ->with('criterias')
+                ->get()->map(function (Competition $competition) {
+                    $criterias = $competition->criterias->map(function (Criteria $criteria) {
+                       return [
+                           'id' => $criteria->id,
+                           'name' => $criteria->name
+                       ];
+                    });
+                    return [
+                        'name' => $competition->name,
+                        'maxMembers' => $competition->max_members,
+                        'criterias' => $criterias
+                    ];
+                });
+
+            $responseData = [
+                'status' => 1,
+                'message' => 'Succeed get all competition',
+                'data' => [
+                    'competitions' => $competitions,
+                ],
+            ];
+
+            return response()->json($responseData, 200);
+        } catch (Exception $exception) {
+            $responseData = [
+                'status' => 0,
+                'message' => $exception->getMessage(),
+            ];
+
+            return response()->json($responseData, 400);
+        }
+
     }
 
     public function store(StoreCompetitionRequest $request): JsonResponse

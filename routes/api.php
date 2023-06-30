@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('competitions', [CompetitionController::class, 'store']);
 });
 
+Route::get('competitions', [CompetitionController::class, 'index']);
 Route::get('competitions/categories', [CategoryController::class, 'index']);
 
 Route::post('login', [LoginController::class, 'store'])->name('login');
