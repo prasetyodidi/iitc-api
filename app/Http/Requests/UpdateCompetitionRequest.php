@@ -23,18 +23,19 @@ class UpdateCompetitionRequest extends FormRequest
     {
         return [
             // max in kilobytes
-//            'cover' => 'file|mimes:png,jpg|max:5120',
-//            'name' => 'required|string:max:255',
-//            'isIndividu' => 'required|boolean',
-//            'categories.*' => 'string',
-//            'deadline' => 'required',
-//            'maxMembers' => 'required|numeric',
-//            'price' => 'required|numeric',
-//            'techStacks.*' => 'required|string|max:255',
-//            'description' => 'required|string',
-//            'guideBookLink' => 'required|string|url',
-//            'criteria.*.name' => 'string',
-//            'criteria.*.percentage' => 'numeric'
+            'cover' => 'file|mimes:png,jpg|max:5120',
+            'name' => 'required|string:max:255',
+            'isIndividu' => 'required|boolean',
+            'categories.*' => 'string',
+            'deadline' => 'required',
+            'maxMembers' => 'required|numeric',
+            'price' => 'required|numeric',
+            'techStacks.*' => 'required|string|max:255',
+            'description' => 'required|string',
+            'guideBookLink' => 'required|string|url',
+            'criteria' => 'required',
+            'criteria.*.name' => 'string',
+            'criteria.*.percentage' => 'numeric'
         ];
     }
 }

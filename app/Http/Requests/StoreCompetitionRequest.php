@@ -33,6 +33,7 @@ class StoreCompetitionRequest extends FormRequest
             'techStacks.*' => 'required|string|max:255',
             'description' => 'required|string',
             'guideBookLink' => 'required|string|url',
+            'criteria' => 'required',
             'criteria.*.name' => 'string',
             'criteria.*.percentage' => 'numeric'
         ];

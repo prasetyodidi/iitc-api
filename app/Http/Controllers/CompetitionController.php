@@ -21,9 +21,9 @@ class CompetitionController extends Controller
                 ->with('categories')
                 ->get()->map(function (Competition $competition) {
                     $categories = $competition->categories->map(function (Category $category) {
-                       return [
-                           'name' => $category->name
-                       ];
+                        return [
+                            'name' => $category->name
+                        ];
                     });
                     return [
                         'name' => $competition->name,
@@ -68,7 +68,7 @@ class CompetitionController extends Controller
 
             $competition = Competition::query()->create($competitionData);
 
-            $arrayCriteria = json_decode($request->criterias);
+            $arrayCriteria = json_decode($request->criteria);
             $criteriaData = [];
             foreach ($arrayCriteria as $criteria) {
                 $criteriaData[] = [
@@ -158,7 +158,7 @@ class CompetitionController extends Controller
             Criterion::query()->where('competition_id', $competition->id)->delete();
             TechStack::query()->where('competition_id', $competition->id)->delete();
 
-            $criteriaData = $this->getCriteriaToDatabase(json_decode($request->criterias), $competition->id);
+            $criteriaData = $this->getCriteriaToDatabase(json_decode($request->criteria), $competition->id);
             $techStacksData = $this->getTechStacksToDatabase(json_decode($request->techStacks), $competition->id);
 
             Criterion::query()->insert($criteriaData);
