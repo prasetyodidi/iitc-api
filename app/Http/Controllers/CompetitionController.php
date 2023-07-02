@@ -114,7 +114,10 @@ class CompetitionController extends Controller
     public function show(string $slug): JsonResponse
     {
         try {
-            $competition = Competition::with(['criteria:id,competition_id,name', 'techStacks:id,competition_id,name', 'categories:id,competition_id,name'])
+            $competition = Competition::with(['criteria:id,competition_id,name',
+                'techStacks:id,competition_id,name',
+                'categories' => fn ($query) => $query->select('name')
+                ])
                 ->where('slug', $slug)
                 ->firstOrFail();
 
