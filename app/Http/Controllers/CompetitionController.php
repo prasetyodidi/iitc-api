@@ -26,9 +26,11 @@ class CompetitionController extends Controller
                         ];
                     });
                     return [
+                        'cover' => $competition->cover,
                         'name' => $competition->name,
                         'maxMembers' => $competition->max_members,
-                        'categories' => $categories
+                        'categories' => $categories,
+                        'slug' => $competition->slug
                     ];
                 });
 
@@ -112,7 +114,7 @@ class CompetitionController extends Controller
     public function show(string $slug): JsonResponse
     {
         try {
-            $competition = Competition::with(['criteria:id,competition_id,name', 'techStacks:id,competition_id,name'])
+            $competition = Competition::with(['criteria:id,competition_id,name', 'techStacks:id,competition_id,name', 'categories:id,competition_id,name'])
                 ->where('slug', $slug)
                 ->firstOrFail();
 
