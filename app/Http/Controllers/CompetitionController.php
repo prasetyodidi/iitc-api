@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCompetitionRequest;
 use App\Http\Requests\UpdateCompetitionRequest;
 use App\Models\Category;
+use App\Models\CategoryCompetition;
 use App\Models\Competition;
 use App\Models\Criterion;
 use App\Models\TechStack;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
@@ -26,11 +28,11 @@ class CompetitionController extends Controller
                         ];
                     });
                     return [
-                        'cover' => $competition->cover,
+                        'slug' => $competition->slug,
                         'name' => $competition->name,
+                        'cover' => $competition->cover,
                         'maxMembers' => $competition->max_members,
                         'categories' => $categories,
-                        'slug' => $competition->slug
                     ];
                 });
 
@@ -87,11 +89,18 @@ class CompetitionController extends Controller
                     'name' => $techStack,
                 ];
             }
+            $arrayCategories = json_decode($request->categories);
+            $categoriesData = [];
+            foreach ($arrayCategories as $category) {
+                $categoriesData[] = [
+                    'competition_id' => $competition->id,
+                    'category_id' => $category,
+                ];
+            }
             Criterion::query()->insert($criteriaData);
             TechStack::query()->insert($techStacksData);
+            CategoryCompetition::query()->insert($categoriesData);
 
-            $competition['criteria'] = $criteriaData;
-            $competition['techStacks'] = $techStacksData;
             $responseData = [
                 'status' => 1,
                 'message' => 'Succeed create new competition',
@@ -114,12 +123,34 @@ class CompetitionController extends Controller
     public function show(string $slug): JsonResponse
     {
         try {
-            $competition = Competition::with(['criteria:id,competition_id,name',
+            $result = Competition::with(['criteria:id,competition_id,name,percentage',
                 'techStacks:id,competition_id,name',
                 'categories' => fn ($query) => $query->select('name')
-                ])
+            ])
                 ->where('slug', $slug)
                 ->firstOrFail();
+
+            $deadline = Carbon::parse($result->deadline);
+            $now = Carbon::now();
+            $days = $deadline->diffInDays($now);
+
+            $techStacks = $result->techStacks->map(fn($item) => $item->name);
+            $categories = $result->categories->map(fn($item) => ['name' => $item->name]);
+            $criteria = $result->criteria->map(fn($item) => ['name' => $item->name, 'percentage' => $item->percentage]);
+
+            $competition = [
+                'name' => $result->name,
+                'slug' => $result->slug,
+                'cover' => $result->cover,
+                'deadline' => $days,
+                'maxMembers' => $result->max_members,
+                'description' => $result->description,
+                'guideBookLink' => $result->guide_book,
+                'competitionPrice' => $result->price,
+                'techStacks' => $techStacks,
+                'categories' => $categories,
+                'criteria' => $criteria,
+            ];
 
             $responseData = [
                 'status' => 1,
@@ -129,7 +160,7 @@ class CompetitionController extends Controller
                 ],
             ];
 
-            return response()->json($responseData, 201);
+            return response()->json($responseData, 200);
         } catch (Exception $exception) {
             $responseData = [
                 'status' => 0,
