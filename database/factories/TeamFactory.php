@@ -19,7 +19,9 @@ class TeamFactory extends Factory
         return [
             'name' => fake()->sentence(3),
             'title' => fake()->sentence,
-            'avatar' => fake()->imageUrl
+            'code' => fake()->bothify('??##??##'),
+            'avatar' => fake()->imageUrl,
+            'submission' => fake()->imageUrl
         ];
     }
 }
