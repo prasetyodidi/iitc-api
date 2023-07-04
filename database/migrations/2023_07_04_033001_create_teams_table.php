@@ -16,8 +16,11 @@ return new class extends Migration
             $table->uuid('leader_id');
             $table->unsignedBigInteger('competition_id');
             $table->string('name');
+            $table->string('code')->unique();
             $table->string('title');
+            $table->boolean('is_active')->default(false);
             $table->string('avatar');
+            $table->string('submission')->nullable();
             $table->timestamps();
 
             $table->foreign('leader_id')
