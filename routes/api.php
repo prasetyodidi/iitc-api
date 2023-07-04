@@ -7,6 +7,7 @@ use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\NewPasswordController;
 use App\Http\Controllers\PasswordResetLinkController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\VerifyEmailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('', [CompetitionController::class, 'destroy']);
     });
     Route::post('competitions', [CompetitionController::class, 'store']);
+    Route::post('teams/{competitionSlug}', [TeamController::class, 'store']);
 });
 
 Route::get('competitions/categories', [CategoryController::class, 'index']);
