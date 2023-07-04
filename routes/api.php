@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('competitions', [CompetitionController::class, 'store']);
     Route::post('teams/{competitionSlug}', [TeamController::class, 'store']);
+    Route::get('teams/{teamId}', [TeamController::class, 'show']);
 });
 
 Route::get('competitions/categories', [CategoryController::class, 'index']);
