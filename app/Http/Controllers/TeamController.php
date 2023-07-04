@@ -34,9 +34,11 @@ class TeamController extends Controller
         try {
             $competition = Competition::query()->where('slug', $competitionSlug)->firstOrFail();
             $avatar = $request->file('avatar')->store('team/avatar', ['disk' => 'public']);
+            $code = fake()->bothify('??##??##');
             $teamData = [
                 'leader_id' => auth()->id(),
                 'competition_id' => $competition->id,
+                'code' => $code,
                 'title' => $request->title,
                 'name' => $request->name,
                 'avatar' => $avatar,
@@ -56,7 +58,7 @@ class TeamController extends Controller
         } catch (Exception $exception) {
             $responseData = [
                 'status' => 0,
-                'message' => $exception->getMessage(),
+                'message' => $exception->getMessage() . ":" . gettype($exception),
             ];
 
             return response()->json($responseData, 400);
@@ -66,9 +68,36 @@ class TeamController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Team $team)
+    public function show(string $teamId)
     {
-        //
+        $team = Team::query()->with('leader')->findOrFail($teamId);
+        $teamResponse = [
+            'code' => $team->code,
+            'name' => $team->name,
+            'title' => $team->title,
+            'isActive' => $team->is_active ? 'Pending' : 'Active',
+            'isSubmit' => isset($team->submission),
+            'avatar' => $team->avatar,
+            'leader' => ['name' => $team->leader->name],
+        ];
+        try {
+            $responseData = [
+                'status' => 1,
+                'message' => 'Succeed create new team',
+                'data' => [
+                    'team' => $teamResponse,
+                ],
+            ];
+
+            return response()->json($responseData, 200);
+        } catch (Exception $exception) {
+            $responseData = [
+                'status' => 0,
+                'message' => $exception->getMessage(),
+            ];
+
+            return response()->json($responseData, 400);
+        }
     }
 
     /**
