@@ -8,6 +8,8 @@ use App\Models\Competition;
 use App\Models\Team;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TeamController extends Controller
 {
@@ -63,7 +65,7 @@ class TeamController extends Controller
         } catch (Exception $exception) {
             $responseData = [
                 'status' => 0,
-                'message' => $exception->getMessage() . ":" . get_class($exception),
+                'message' => $exception->getMessage(),
             ];
 
             return response()->json($responseData, 400);
@@ -75,20 +77,21 @@ class TeamController extends Controller
      */
     public function show(string $teamId)
     {
-        $team = Team::query()->with('leader')->findOrFail($teamId);
-        $teamResponse = [
-            'name' => $team->name,
-            'code' => $team->code,
-            'title' => $team->title,
-            'isActive' => $team->is_active ? 'Pending' : 'Active',
-            'isSubmit' => isset($team->submission),
-            'avatar' => $team->avatar,
-            'leader' => ['name' => $team->leader->name],
-        ];
         try {
+            $team = Team::query()->with('leader')->findOrFail($teamId);
+            $teamResponse = [
+                'name' => $team->name,
+                'code' => $team->code,
+                'title' => $team->title,
+                'isActive' => $team->is_active ? 'Pending' : 'Active',
+                'isSubmit' => isset($team->submission),
+                'avatar' => url('/') . Storage::url($team->avatar),
+                'leader' => ['name' => $team->leader->name],
+            ];
+
             $responseData = [
                 'status' => 1,
-                'message' => 'Succeed create new team',
+                'message' => 'Succeed get detail team',
                 'data' => [
                     'team' => $teamResponse,
                 ],
@@ -105,20 +108,57 @@ class TeamController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Team $team)
+    public function update(UpdateTeamRequest $request, string $teamId)
     {
-        //
-    }
+        try {
+            $team = Team::query()->findOrFail($teamId);
+            $teamData = [
+                'name' => $request->name,
+                'title' => $request->title,
+            ];
+            $isUploadAvatar = $request->file('avatar') !== null;
+            if ($isUploadAvatar) {
+                $oldAvatar = $team->avatar;
+                $avatar = $request->file('avatar')->store('team/avatar', ['disk' => 'public']);
+                $teamData['avatar'] = $avatar;
+                Storage::disk('public')->delete($oldAvatar);
+            }
+            $isUploadSubmission = $request->file('submission') !== null;
+            if ($isUploadSubmission) {
+                $uuidFolder = Str::uuid();
+                $submission = $request->file('submission')
+                    ->storeAs(
+                        "submission/$uuidFolder",
+                        $request->file('submission')->getClientOriginalName(),
+                        ['disk' => 'local']
+                    );
+                $teamData['submission'] = $submission;
+            }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateTeamRequest $request, Team $team)
-    {
-        //
+            $team->update($teamData);
+
+            $responseData = [
+                'status' => 1,
+                'message' => 'Succeed updated team',
+                'data' => [
+                    'team' => [
+                        'id' => $team->id,
+                        'name' => $team->name,
+                        'title' => $team->title,
+                        'avatar' => url('/') . Storage::url($team->avatar),
+                    ],
+                ],
+            ];
+
+            return response()->json($responseData, 200);
+        } catch (Exception $exception) {
+            $responseData = [
+                'status' => 0,
+                'message' => $exception->getMessage(),
+            ];
+
+            return response()->json($responseData, 400);
+        }
     }
 
     /**
