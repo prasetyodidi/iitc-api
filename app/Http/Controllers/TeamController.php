@@ -43,6 +43,7 @@ class TeamController extends Controller
                 'message' => 'Succeed create new team',
                 'data' => [
                     'team' => [
+                        'id' => $team->id,
                         'code' => $team->code,
                         'title' => $team->title,
                         'name' => $team->name,
@@ -112,13 +113,15 @@ class TeamController extends Controller
             $isUploadSubmission = $request->file('submission') !== null;
             if ($isUploadSubmission) {
                 $uuidFolder = Str::uuid();
+                $originalFileName = $request->file('submission')->getClientOriginalName();
                 $submission = $request->file('submission')
                     ->storeAs(
                         "submission/$uuidFolder",
-                        $request->file('submission')->getClientOriginalName(),
+                        $originalFileName,
                         ['disk' => 'local']
                     );
                 $teamData['submission'] = $submission;
+                $teamData['submission_file_name'] = $originalFileName;
             }
 
             $team->update($teamData);
