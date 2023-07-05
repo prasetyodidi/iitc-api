@@ -21,17 +21,6 @@ class TeamController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreTeamRequest $request, string $competitionSlug): JsonResponse
     {
         try {
@@ -72,10 +61,7 @@ class TeamController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $teamId)
+    public function show(string $teamId): JsonResponse
     {
         try {
             $team = Team::query()->with('leader')->findOrFail($teamId);
@@ -108,7 +94,7 @@ class TeamController extends Controller
         }
     }
 
-    public function update(UpdateTeamRequest $request, string $teamId)
+    public function update(UpdateTeamRequest $request, string $teamId): JsonResponse
     {
         try {
             $team = Team::query()->findOrFail($teamId);
