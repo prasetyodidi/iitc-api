@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('teams/{teamId}', [TeamController::class, 'update']);
+
     Route::post('logout', [LogoutController::class, 'store']);
 
     Route::post('competitions/categories', [CategoryController::class, 'store']);
