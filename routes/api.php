@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('teams/{competitionSlug}', [TeamController::class, 'store']);
     Route::get('teams/{teamId}', [TeamController::class, 'show']);
     Route::post('teams/{teamId}/update', [TeamController::class, 'update']);
+    Route::delete('teams/{teamId}', [TeamController::class, 'destroy']);
 });
 
 Route::get('competitions/categories', [CategoryController::class, 'index']);

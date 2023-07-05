@@ -150,11 +150,27 @@ class TeamController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Team $team)
+    public function destroy(string $teamId): JsonResponse
     {
-        //
+        try {
+            Team::query()->where('id', $teamId)->delete();
+
+            $responseData = [
+                'status' => 1,
+                'message' => 'Succeed delete team',
+                'data' => [
+                    'teamId' => $teamId,
+                ],
+            ];
+
+            return response()->json($responseData, 200);
+        } catch (Exception $exception) {
+            $responseData = [
+                'status' => 0,
+                'message' => $exception->getMessage(),
+            ];
+
+            return response()->json($responseData, 400);
+        }
     }
 }
