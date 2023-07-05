@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('title');
             $table->boolean('is_active')->default(false);
-            $table->string('avatar');
+            $table->string('avatar')->nullable();
             $table->string('submission')->nullable();
             $table->timestamps();
 
