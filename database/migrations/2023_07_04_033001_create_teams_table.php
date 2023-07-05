@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(false);
             $table->string('avatar')->nullable();
             $table->string('submission')->nullable();
+            $table->string('submission_file_name')->nullable();
             $table->timestamps();
 
             $table->foreign('leader_id')
