@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateTeamRequest;
 use App\Models\Competition;
 use App\Models\Team;
 use Exception;
+use Illuminate\Http\JsonResponse;
 
 class TeamController extends Controller
 {
@@ -29,12 +30,12 @@ class TeamController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTeamRequest $request, string $competitionSlug)
+    public function store(StoreTeamRequest $request, string $competitionSlug): JsonResponse
     {
         try {
             $competition = Competition::query()->where('slug', $competitionSlug)->firstOrFail();
             $avatar = $request->file('avatar')->store('team/avatar', ['disk' => 'public']);
-            $code = fake()->bothify('??##??##');
+            $code = fake()->bothify('##??##??');
             $teamData = [
                 'leader_id' => auth()->id(),
                 'competition_id' => $competition->id,
@@ -50,7 +51,11 @@ class TeamController extends Controller
                 'status' => 1,
                 'message' => 'Succeed create new team',
                 'data' => [
-                    'team' => $team,
+                    'team' => [
+                        'code' => $team->code,
+                        'title' => $team->title,
+                        'name' => $team->name,
+                    ],
                 ],
             ];
 
@@ -58,7 +63,7 @@ class TeamController extends Controller
         } catch (Exception $exception) {
             $responseData = [
                 'status' => 0,
-                'message' => $exception->getMessage() . ":" . gettype($exception),
+                'message' => $exception->getMessage() . ":" . get_class($exception),
             ];
 
             return response()->json($responseData, 400);
@@ -72,8 +77,8 @@ class TeamController extends Controller
     {
         $team = Team::query()->with('leader')->findOrFail($teamId);
         $teamResponse = [
-            'code' => $team->code,
             'name' => $team->name,
+            'code' => $team->code,
             'title' => $team->title,
             'isActive' => $team->is_active ? 'Pending' : 'Active',
             'isSubmit' => isset($team->submission),
