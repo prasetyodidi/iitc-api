@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->uuid('leader_id');
             $table->unsignedBigInteger('competition_id');
-            $table->string('name');
-            $table->string('code')->unique();
+            $table->string('name')->nullable();
+            $table->string('code')->unique()->nullable();
             $table->string('title');
             $table->boolean('is_active')->default(false);
             $table->string('avatar')->nullable();
