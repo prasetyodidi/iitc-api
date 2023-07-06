@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\JoinTeamController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\NewPasswordController;
@@ -51,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('teams/{teamId}', [TeamController::class, 'show']);
     Route::post('teams/{teamId}/update', [TeamController::class, 'update']);
     Route::delete('teams/{teamId}', [TeamController::class, 'destroy']);
+    Route::put('teams/{teamId}/join', [JoinTeamController::class, 'store']);
 });
 
 Route::get('competitions/categories', [CategoryController::class, 'index']);
