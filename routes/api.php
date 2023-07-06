@@ -2,11 +2,15 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\DeleteTeamMemberController;
+use App\Http\Controllers\JoinIndividualCompetitionController;
+use App\Http\Controllers\JoinTeamController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\NewPasswordController;
 use App\Http\Controllers\PasswordResetLinkController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\VerifyEmailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +50,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('', [CompetitionController::class, 'destroy']);
     });
     Route::post('competitions', [CompetitionController::class, 'store']);
+    Route::post('teams/{competitionSlug}', [TeamController::class, 'store']);
+    Route::get('teams/{teamId}', [TeamController::class, 'show']);
+    Route::post('teams/{teamId}/update', [TeamController::class, 'update']);
+    Route::delete('teams/{teamId}', [TeamController::class, 'destroy']);
+    Route::put('teams/{teamId}/join', [JoinTeamController::class, 'store']);
+    Route::delete('teams/{teamId}/members/{memberId}', DeleteTeamMemberController::class);
+    Route::post('individual/{competitionSlug}', JoinIndividualCompetitionController::class);
 });
 
 Route::get('competitions/categories', [CategoryController::class, 'index']);
