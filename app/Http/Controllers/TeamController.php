@@ -33,7 +33,7 @@ class TeamController extends Controller
                 'code' => $code,
                 'title' => $request->title,
                 'name' => $request->name,
-                'avatar' => $avatar,
+                'avatar' => url('/') . Storage::url($avatar),
             ];
 
             $team = Team::query()->create($teamData);
@@ -72,7 +72,7 @@ class TeamController extends Controller
                 'title' => $team->title,
                 'isActive' => $team->is_active ? 'Pending' : 'Active',
                 'isSubmit' => isset($team->submission),
-                'avatar' => url('/') . Storage::url($team->avatar),
+                'avatar' => $team->avatar,
                 'leader' => ['name' => $team->leader->name],
             ];
 
@@ -107,7 +107,7 @@ class TeamController extends Controller
             if ($isUploadAvatar) {
                 $oldAvatar = $team->avatar;
                 $avatar = $request->file('avatar')->store('team/avatar', ['disk' => 'public']);
-                $teamData['avatar'] = $avatar;
+                $teamData['avatar'] = url('/') . Storage::url($avatar);
                 Storage::disk('public')->delete($oldAvatar);
             }
             $isUploadSubmission = $request->file('submission') !== null;
@@ -134,7 +134,7 @@ class TeamController extends Controller
                         'id' => $team->id,
                         'name' => $team->name,
                         'title' => $team->title,
-                        'avatar' => url('/') . Storage::url($team->avatar),
+                        'avatar' => $team->avatar,
                     ],
                 ],
             ];
