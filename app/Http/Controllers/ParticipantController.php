@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreParticipantRequest;
 use App\Http\Requests\UpdateParticipantRequest;
 use App\Models\Participant;
 use Exception;
@@ -23,14 +22,6 @@ class ParticipantController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreParticipantRequest $request)
     {
         //
     }
@@ -59,19 +50,13 @@ class ParticipantController extends Controller
         try {
             $user = auth()->user();
 
-            $isUploadAvatar = $request->file('avatar') !== null;
             $userData = [
                 'name' => $request->input('fullName'),
                 'phone' => $request->input('phone'),
             ];
-            if ($isUploadAvatar) {
-                $oldAvatar = $user->avatar;
-                $avatar = $request->file('avatar')->store('user/avatar', ['disk' => 'public']);
-                $userData['avatar'] = $avatar;
-                Storage::disk('public')->delete($oldAvatar);
-            }
             $user->update($userData);
 
+            $avatar = $request->file('avatar')->store('user/avatar', ['disk' => 'public']);
             $photoIdentity = $request->file('photoIdentity')->store('participant', ['disk' => 'local']);
             $profileData = [
                 'grade' => $request->input('grade'),
@@ -79,8 +64,9 @@ class ParticipantController extends Controller
                 'student_id_number' => $request->input('studentId'),
                 'gender' => $request->input('gender'),
                 'photo_identity' => $photoIdentity,
+                'avatar' => url('/') . Storage::url($avatar),
             ];
-            $detail = Participant::query()->updateOrCreate(['user_id' => $user->id], $profileData);
+            $detail = Participant::query()->updateOrCreate(['user_id' => auth()->id()], $profileData);
 
             $responseData = [
                 'status' => 1,

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('gender');
             $table->string('student_id_number');
             $table->string('institution');
+            $table->string('avatar');
             $table->string('photo_identity');
             $table->timestamps();
 
