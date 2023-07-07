@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Member;
+use App\Models\Participant;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -45,6 +46,12 @@ class DatabaseSeeder extends Seeder
                 ]);
                 $memberIndex++;
             }
+        }
+
+        foreach ($members as $member) {
+            Participant::factory()->create([
+                'user_id' => $member->id,
+            ]);
         }
     }
 }
