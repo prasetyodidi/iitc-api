@@ -24,8 +24,9 @@ class ParticipantFactory extends Factory
             'grade' => $isStudent ? Grade::Student : Grade::CollegeStudent,
             'institution' => fake()->company,
             'gender' => $isMale ? Gender::Male : Gender::Female,
+            'student_id_number' => fake()->bothify('??##??##??###'),
+            'avatar' => fake()->imageUrl,
             'photo_identity' => fake()->imageUrl,
-            'student_id_number' => fake()->bothify('??##??##??###')
         ];
     }
 }
