@@ -66,7 +66,7 @@ class ParticipantController extends Controller
                 'photo_identity' => $photoIdentity,
                 'avatar' => url('/') . Storage::url($avatar),
             ];
-            $detail = Participant::query()->updateOrCreate(['user_id' => $user->id], $profileData);
+            $detail = Participant::query()->updateOrCreate(['user_id' => auth()->id()], $profileData);
 
             $responseData = [
                 'status' => 1,
