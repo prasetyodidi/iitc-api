@@ -59,19 +59,13 @@ class ParticipantController extends Controller
         try {
             $user = auth()->user();
 
-            $isUploadAvatar = $request->file('avatar') !== null;
             $userData = [
                 'name' => $request->input('fullName'),
                 'phone' => $request->input('phone'),
             ];
-            if ($isUploadAvatar) {
-                $oldAvatar = $user->avatar;
-                $avatar = $request->file('avatar')->store('user/avatar', ['disk' => 'public']);
-                $userData['avatar'] = $avatar;
-                Storage::disk('public')->delete($oldAvatar);
-            }
             $user->update($userData);
 
+            $avatar = $request->file('avatar')->store('user/avatar', ['disk' => 'public']);
             $photoIdentity = $request->file('photoIdentity')->store('participant', ['disk' => 'local']);
             $profileData = [
                 'grade' => $request->input('grade'),
@@ -79,6 +73,7 @@ class ParticipantController extends Controller
                 'student_id_number' => $request->input('studentId'),
                 'gender' => $request->input('gender'),
                 'photo_identity' => $photoIdentity,
+                'avatar' => url('/') . Storage::url($avatar),
             ];
             $detail = Participant::query()->updateOrCreate(['user_id' => $user->id], $profileData);
 
