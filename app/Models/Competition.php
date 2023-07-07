@@ -29,6 +29,11 @@ class Competition extends Model
         return $this->hasMany(TechStack::class);
     }
 
+    public function teams(): HasMany
+    {
+        return $this->hasMany(Team::class);
+    }
+
     public function sluggable(): array
     {
         return [
