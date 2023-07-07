@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRegisterRequest extends FormRequest
+class UpdateCategoryCompetitionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,10 +22,7 @@ class StoreRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "fullName" => "required|string",
-            "email" => "required|email|unique:users",
-            "password" => "required|string",
-            "phone" => "required|numeric"
+            //
         ];
     }
 }

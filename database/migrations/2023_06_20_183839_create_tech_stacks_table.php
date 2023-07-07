@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('personal_access_tokens', function (Blueprint $table) {
+        Schema::create('tech_stacks', function (Blueprint $table) {
             $table->id();
-            $table->uuidMorphs('tokenable');
+            $table->unsignedBigInteger('competition_id');
             $table->string('name');
-            $table->string('token', 64)->unique();
-            $table->text('abilities')->nullable();
-            $table->timestamp('last_used_at')->nullable();
-            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
+
+            $table->foreign('competition_id')->references('id')->on('competitions');
         });
     }
 
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('personal_access_tokens');
+        Schema::dropIfExists('tech_stacks');
     }
 };

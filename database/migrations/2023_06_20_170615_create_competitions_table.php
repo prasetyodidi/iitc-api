@@ -11,10 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('competition_categories', function (Blueprint $table) {
+        Schema::create('competitions', function (Blueprint $table) {
             $table->id();
+            $table->string('slug')->unique();
             $table->string('name');
+            $table->dateTime('deadline');
+            $table->integer('max_members');
+            $table->integer('price');
+            $table->text('description');
+            $table->string('guide_book');
+            $table->string('cover');
             $table->timestamps();
+
         });
     }
 
@@ -23,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('competition_categories');
+        Schema::dropIfExists('competitions');
     }
 };

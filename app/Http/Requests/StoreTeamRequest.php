@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCompetitionCategoryRequest extends FormRequest
+class StoreTeamRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,9 @@ class UpdateCompetitionCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'avatar' => 'file|mimes:png,jpg|max:5120'
         ];
     }
 }
