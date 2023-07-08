@@ -32,7 +32,7 @@ class UpdateParticipantRequest extends FormRequest
             'studentId' => $stringValidation,
             'gender' => [new Enum(Gender::class), 'required'],
             'phone' => 'required|numeric',
-            'avatar' => 'file|mimes:png,jpg|max:5120',
+            'avatar' => 'required|file|mimes:png,jpg|max:5120',
             'photoIdentity' => 'required|file|mimes:png,jpg|max:10240',
         ];
     }

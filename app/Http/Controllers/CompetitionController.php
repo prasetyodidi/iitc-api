@@ -67,7 +67,7 @@ class CompetitionController extends Controller
                 'price' => $request->input('price'),
                 'description' => $request->input('description'),
                 'guide_book' => $request->input('guideBookLink'),
-                'cover' => $cover,
+                'cover' => url('/') . Storage::url($cover),
             ];
 
             $competition = Competition::query()->create($competitionData);
@@ -186,7 +186,7 @@ class CompetitionController extends Controller
                 'price' => $request->input('price'),
                 'description' => $request->input('description'),
                 'guide_book' => $request->input('guideBookLink'),
-                'cover' => $cover,
+                'cover' => url('/') . Storage::url($cover),
             ];
 
             $competition->update($competitionData);
