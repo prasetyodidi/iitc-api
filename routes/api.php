@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\CompetitionMineController;
 use App\Http\Controllers\DeleteTeamMemberController;
 use App\Http\Controllers\JoinIndividualCompetitionController;
 use App\Http\Controllers\JoinTeamController;
@@ -59,6 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('teams/{teamId}/members/{memberId}', DeleteTeamMemberController::class);
     Route::post('individual/{competitionSlug}', JoinIndividualCompetitionController::class);
     Route::post('/profile', [ParticipantController::class, 'update']);
+    Route::get('competitions/mine', CompetitionMineController::class);
 });
 
 Route::get('competitions/categories', [CategoryController::class, 'index']);
