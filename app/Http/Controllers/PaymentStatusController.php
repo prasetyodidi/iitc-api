@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PaymentStatus as PaymentStatusEnum;
-use App\Http\Requests\UpdatePaymentRequest;
+use App\Http\Requests\UpdatePaymentStatusRequest;
 use App\Models\PaymentStatus;
 use App\Models\Team;
 use Exception;
@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class PaymentStatusController extends Controller
 {
 
-    public function update(UpdatePaymentRequest $request, string $teamId): JsonResponse
+    public function update(UpdatePaymentStatusRequest $request, string $teamId): JsonResponse
     {
         try {
             $team = Team::query()->findOrFail($teamId);
