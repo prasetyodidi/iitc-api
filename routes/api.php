@@ -12,6 +12,7 @@ use App\Http\Controllers\NewPasswordController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\PasswordResetLinkController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\VerifyEmailController;
@@ -63,7 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile', [ParticipantController::class, 'update']);
     Route::get('competitions/mine', CompetitionMineController::class);
     Route::post('payment/{teamId}', [PaymentController::class, 'store']);
-    Route::post('payment/{teamId}/payment-status', [PaymentController::class, 'update']);
+    Route::post('payment/{teamId}/payment-status', [PaymentStatusController::class, 'update']);
 });
 
 Route::get('competitions/categories', [CategoryController::class, 'index']);
