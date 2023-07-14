@@ -25,15 +25,12 @@ class TeamController extends Controller
     {
         try {
             $competition = Competition::query()->where('slug', $competitionSlug)->firstOrFail();
-            $avatar = $request->file('avatar')->store('team/avatar', ['disk' => 'public']);
             $code = fake()->bothify('##??##??');
             $teamData = [
                 'leader_id' => auth()->id(),
                 'competition_id' => $competition->id,
                 'code' => $code,
-                'title' => $request->title,
                 'name' => $request->name,
-                'avatar' => url('/') . Storage::url($avatar),
             ];
 
             $team = Team::query()->create($teamData);
@@ -45,7 +42,6 @@ class TeamController extends Controller
                     'team' => [
                         'id' => $team->id,
                         'code' => $team->code,
-                        'title' => $team->title,
                         'name' => $team->name,
                     ],
                 ],
@@ -73,7 +69,10 @@ class TeamController extends Controller
                 'isActive' => $team->is_active ? 'Pending' : 'Active',
                 'isSubmit' => isset($team->submission),
                 'avatar' => $team->avatar,
-                'leader' => ['name' => $team->leader->name],
+                'leader' => [
+                    'name' => $team->leader->name,
+                    'email' => $team->leader->email,
+                ],
             ];
 
             $responseData = [

@@ -18,7 +18,6 @@ class JoinIndividualCompetitionController extends Controller
             $teamData = [
                 'leader_id' => auth()->id(),
                 'competition_id' => $competition->id,
-                'title' => $request->title,
             ];
 
             $team = Team::query()->create($teamData);
@@ -28,8 +27,7 @@ class JoinIndividualCompetitionController extends Controller
                 'message' => 'Succeed joined competition',
                 'data' => [
                     'team' => [
-                        'id' => $team->id,
-                        'title' => $team->title,
+                        'id' => $team->id
                     ]
                 ]
             ];

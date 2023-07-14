@@ -23,8 +23,6 @@ class StoreTeamRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'title' => 'required|string|max:255',
-            'avatar' => 'file|mimes:png,jpg|max:5120'
         ];
     }
 }
