@@ -11,10 +11,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasUuids;
+    use HasApiTokens, HasFactory, Notifiable, HasUuids, HasRoles;
 
     protected $guarded = [];
 
@@ -52,4 +53,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Participant::class);
     }
+
+    public function isMemberOf(int $teamId): bool
+    {
+        $isMember = Member::query()->where('user_id', $this->id)->where('team_id', $teamId)->first();
+
+        return $isMember != null;
+    }
+
 }
