@@ -13,33 +13,25 @@ class DeleteTeamMemberController extends Controller
 {
     public function __invoke(string $teamId, string $memberId): JsonResponse
     {
-        try {
-            $team = Team::query()->findOrFail($teamId);
-            $member = User::query()->findOrFail($memberId);
+        $this->authorize('delete', Team::query()->find($teamId));
+        $team = Team::query()->findOrFail($teamId);
+        $member = User::query()->findOrFail($memberId);
 
-            Member::query()->where('team_id', $team->id)
-                ->where('user_id', $member->id)
-                ->firstOrFail();
+        Member::query()->where('team_id', $team->id)
+            ->where('user_id', $member->id)
+            ->firstOrFail();
 
-            $member->asMembers()->detach($team->id);
+        $member->asMembers()->detach($team->id);
 
-            $responseData = [
-                'status' => 1,
-                'message' => 'Succeed delete user from team',
-                'data' => [
-                    'teamId' => $teamId,
-                    'memberId' => $memberId,
-                ],
-            ];
+        $responseData = [
+            'status' => 1,
+            'message' => 'Succeed delete user from team',
+            'data' => [
+                'teamId' => $teamId,
+                'memberId' => $memberId,
+            ],
+        ];
 
-            return response()->json($responseData, 201);
-        } catch (Exception $exception) {
-            $responseData = [
-                'status' => 0,
-                'message' => $exception->getMessage(),
-            ];
-
-            return response()->json($responseData, 400);
-        }
+        return response()->json($responseData, 201);
     }
 }
