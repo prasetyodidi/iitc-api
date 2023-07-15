@@ -18,207 +18,187 @@ class CompetitionController extends Controller
 {
     public function index(): JsonResponse
     {
-        try {
-            $competitions = Competition::query()
-                ->with('categories')
-                ->get()->map(function (Competition $competition) {
-                    $categories = $competition->categories->map(function (Category $category) {
-                        return [
-                            'name' => $category->name
-                        ];
-                    });
+        $competitions = Competition::query()
+            ->with('categories')
+            ->get()->map(function (Competition $competition) {
+                $categories = $competition->categories->map(function (Category $category) {
                     return [
-                        'slug' => $competition->slug,
-                        'name' => $competition->name,
-                        'cover' => $competition->cover,
-                        'maxMembers' => $competition->max_members,
-                        'categories' => $categories,
+                        'name' => $category->name
                     ];
                 });
+                return [
+                    'slug' => $competition->slug,
+                    'name' => $competition->name,
+                    'cover' => $competition->cover,
+                    'maxMembers' => $competition->max_members,
+                    'categories' => $categories,
+                ];
+            });
 
-            $responseData = [
-                'status' => 1,
-                'message' => 'Succeed get all competition',
-                'data' => [
-                    'competitions' => $competitions,
-                ],
-            ];
+        $responseData = [
+            'status' => 1,
+            'message' => 'Succeed get all competition',
+            'data' => [
+                'competitions' => $competitions,
+            ],
+        ];
 
-            return response()->json($responseData, 200);
-        } catch (Exception $exception) {
-            $responseData = [
-                'status' => 0,
-                'message' => $exception->getMessage(),
-            ];
-
-            return response()->json($responseData, 400);
-        }
-
+        return response()->json($responseData, 200);
     }
 
     public function store(StoreCompetitionRequest $request): JsonResponse
     {
-        try {
-            $cover = $request->file('cover')->store('competition/avatar', ['disk' => 'public']);
-            $competitionData = [
-                'name' => $request->input('name'),
-                'deadline' => $request->input('deadline'),
-                'max_members' => $request->input('maxMembers'),
-                'price' => $request->input('price'),
-                'description' => $request->input('description'),
-                'guide_book' => $request->input('guideBookLink'),
-                'cover' => url('/') . Storage::url($cover),
+        $this->authorize('create', Competition::class);
+        $cover = $request->file('cover')->store('competition/avatar', ['disk' => 'public']);
+        $competitionData = [
+            'name' => $request->input('name'),
+            'deadline' => $request->input('deadline'),
+            'max_members' => $request->input('maxMembers'),
+            'price' => $request->input('price'),
+            'description' => $request->input('description'),
+            'guide_book' => $request->input('guideBookLink'),
+            'cover' => url('/') . Storage::url($cover),
+        ];
+
+        $competition = Competition::query()->create($competitionData);
+
+        $arrayCriteria = json_decode($request->criteria);
+        $criteriaData = [];
+        foreach ($arrayCriteria as $criteria) {
+            $criteriaData[] = [
+                'competition_id' => $competition->id,
+                'name' => $criteria->name,
+                'percentage' => $criteria->percentage,
             ];
-
-            $competition = Competition::query()->create($competitionData);
-
-            $arrayCriteria = json_decode($request->criteria);
-            $criteriaData = [];
-            foreach ($arrayCriteria as $criteria) {
-                $criteriaData[] = [
-                    'competition_id' => $competition->id,
-                    'name' => $criteria->name,
-                    'percentage' => $criteria->percentage,
-                ];
-            }
-            $arrayTechStacks = json_decode($request->techStacks);
-            $techStacksData = [];
-            foreach ($arrayTechStacks as $techStack) {
-                $techStacksData[] = [
-                    'competition_id' => $competition->id,
-                    'name' => $techStack,
-                ];
-            }
-            $arrayCategories = json_decode($request->categories);
-            $categoriesData = [];
-            foreach ($arrayCategories as $category) {
-                $categoriesData[] = [
-                    'competition_id' => $competition->id,
-                    'category_id' => $category,
-                ];
-            }
-            Criterion::query()->insert($criteriaData);
-            TechStack::query()->insert($techStacksData);
-            CategoryCompetition::query()->insert($categoriesData);
-
-            $responseData = [
-                'status' => 1,
-                'message' => 'Succeed create new competition',
-                'data' => [
-                    'competition' => $competition,
-                ],
-            ];
-
-            return response()->json($responseData, 201);
-        } catch (Exception $exception) {
-            $responseData = [
-                'status' => 0,
-                'message' => $exception->getMessage(),
-            ];
-
-            return response()->json($responseData, 400);
         }
+        $arrayTechStacks = json_decode($request->techStacks);
+        $techStacksData = [];
+        foreach ($arrayTechStacks as $techStack) {
+            $techStacksData[] = [
+                'competition_id' => $competition->id,
+                'name' => $techStack,
+            ];
+        }
+        $arrayCategories = json_decode($request->categories);
+        $categoriesData = [];
+        foreach ($arrayCategories as $category) {
+            $categoriesData[] = [
+                'competition_id' => $competition->id,
+                'category_id' => $category,
+            ];
+        }
+        Criterion::query()->insert($criteriaData);
+        TechStack::query()->insert($techStacksData);
+        CategoryCompetition::query()->insert($categoriesData);
+
+        $responseData = [
+            'status' => 1,
+            'message' => 'Succeed create new competition',
+            'data' => [
+                'competition' => $competition,
+            ],
+        ];
+
+        return response()->json($responseData, 201);
     }
 
     public function show(string $slug): JsonResponse
     {
-        try {
-            $result = Competition::with(['criteria:id,competition_id,name,percentage',
-                'techStacks:id,competition_id,name',
-                'categories' => fn ($query) => $query->select('name')
-            ])
-                ->where('slug', $slug)
-                ->firstOrFail();
+        $result = Competition::with(['criteria:id,competition_id,name,percentage',
+            'techStacks:id,competition_id,name',
+            'categories' => fn ($query) => $query->select('name'),
+        ])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-            $deadline = Carbon::parse($result->deadline);
-            $now = Carbon::now();
-            $days = $deadline->diffInDays($now);
+        $deadline = Carbon::parse($result->deadline);
+        $now = Carbon::now();
+        $days = $deadline->diffInDays($now);
 
-            $techStacks = $result->techStacks->map(fn($item) => $item->name);
-            $categories = $result->categories->map(fn($item) => ['name' => $item->name]);
-            $criteria = $result->criteria->map(fn($item) => ['name' => $item->name, 'percentage' => $item->percentage]);
+        $techStacks = $result->techStacks->map(fn($item) => $item->name);
+        $categories = $result->categories->map(fn($item) => ['name' => $item->name]);
+        $criteria = $result->criteria->map(fn($item) => ['name' => $item->name, 'percentage' => $item->percentage]);
 
-            $competition = [
-                'name' => $result->name,
-                'slug' => $result->slug,
-                'cover' => $result->cover,
-                'deadline' => $days,
-                'maxMembers' => $result->max_members,
-                'description' => $result->description,
-                'guideBookLink' => $result->guide_book,
-                'competitionPrice' => $result->price,
-                'techStacks' => $techStacks,
-                'categories' => $categories,
-                'criteria' => $criteria,
-            ];
+        $competition = [
+            'name' => $result->name,
+            'slug' => $result->slug,
+            'cover' => $result->cover,
+            'deadline' => $days,
+            'maxMembers' => $result->max_members,
+            'description' => $result->description,
+            'guideBookLink' => $result->guide_book,
+            'competitionPrice' => $result->price,
+            'techStacks' => $techStacks,
+            'categories' => $categories,
+            'criteria' => $criteria,
+        ];
 
-            $responseData = [
-                'status' => 1,
-                'message' => 'Succeed get detail competition',
-                'data' => [
-                    'competition' => $competition,
-                ],
-            ];
+        $responseData = [
+            'status' => 1,
+            'message' => 'Succeed get detail competition',
+            'data' => [
+                'competition' => $competition,
+            ],
+        ];
 
-            return response()->json($responseData, 200);
-        } catch (Exception $exception) {
-            $responseData = [
-                'status' => 0,
-                'message' => $exception->getMessage(),
-            ];
-
-            return response()->json($responseData, 400);
-        }
+        return response()->json($responseData, 200);
     }
 
     public function update(UpdateCompetitionRequest $request, string $slug): JsonResponse
     {
-        try {
-            $competition = Competition::query()->where('slug', $slug)->firstOrFail();
+        $this->authorize('update', Competition::query()->where('slug', $slug)->firstOrFail());
+        $competition = Competition::query()->where('slug', $slug)->firstOrFail();
 
-            $cover = $request->file('cover')->store('competition/avatar', ['disk' => 'public']);
-            Storage::disk('public')->delete($competition->cover);
+        $cover = $request->file('cover')->store('competition/avatar', ['disk' => 'public']);
+        Storage::disk('public')->delete($competition->cover);
 
-            $competitionData = [
-                'name' => $request->input('name'),
-                'deadline' => $request->input('deadline'),
-                'max_members' => $request->input('maxMembers'),
-                'price' => $request->input('price'),
-                'description' => $request->input('description'),
-                'guide_book' => $request->input('guideBookLink'),
-                'cover' => url('/') . Storage::url($cover),
-            ];
+        $competitionData = [
+            'name' => $request->input('name'),
+            'deadline' => $request->input('deadline'),
+            'max_members' => $request->input('maxMembers'),
+            'price' => $request->input('price'),
+            'description' => $request->input('description'),
+            'guide_book' => $request->input('guideBookLink'),
+            'cover' => url('/') . Storage::url($cover),
+        ];
 
-            $competition->update($competitionData);
+        $competition->update($competitionData);
 
-            Criterion::query()->where('competition_id', $competition->id)->delete();
-            TechStack::query()->where('competition_id', $competition->id)->delete();
+        Criterion::query()->where('competition_id', $competition->id)->delete();
+        TechStack::query()->where('competition_id', $competition->id)->delete();
 
-            $criteriaData = $this->getCriteriaToDatabase(json_decode($request->criteria), $competition->id);
-            $techStacksData = $this->getTechStacksToDatabase(json_decode($request->techStacks), $competition->id);
+        $criteriaData = $this->getCriteriaToDatabase(json_decode($request->criteria), $competition->id);
+        $techStacksData = $this->getTechStacksToDatabase(json_decode($request->techStacks), $competition->id);
 
-            Criterion::query()->insert($criteriaData);
-            TechStack::query()->insert($techStacksData);
+        Criterion::query()->insert($criteriaData);
+        TechStack::query()->insert($techStacksData);
 
-            $competition['criteria'] = $criteriaData;
-            $competition['techStacks'] = $techStacksData;
-            $responseData = [
-                'status' => 1,
-                'message' => 'Succeed update competition',
-                'data' => [
-                    'competition' => $competition,
-                ],
-            ];
+        $competition['criteria'] = $criteriaData;
+        $competition['techStacks'] = $techStacksData;
+        $responseData = [
+            'status' => 1,
+            'message' => 'Succeed update competition',
+            'data' => [
+                'competition' => $competition,
+            ],
+        ];
 
-            return response()->json($responseData, 200);
-        } catch (Exception $exception) {
-            $responseData = [
-                'status' => 0,
-                'message' => $exception->getMessage(),
-            ];
+        return response()->json($responseData, 200);
+    }
 
-            return response()->json($responseData, 400);
-        }
+    public function destroy(string $slug): JsonResponse
+    {
+        $this->authorize('delete', Competition::query()->where('slug', $slug)->firstOrFail());
+
+        $competition = Competition::query()->where('slug', $slug)->firstOrFail();
+        $competition->delete();
+
+        $responseData = [
+            'status' => 1,
+            'message' => 'Succeed delete competition',
+        ];
+
+        return response()->json($responseData, 200);
     }
 
     private function getCriteriaToDatabase(array $criteria, int $competitionId): array
@@ -246,27 +226,5 @@ class CompetitionController extends Controller
         }
 
         return $techStacksData;
-    }
-
-    public function destroy(string $slug): JsonResponse
-    {
-        try {
-            $competition = Competition::query()->where('slug', $slug)->firstOrFail();
-            $competition->delete();
-
-            $responseData = [
-                'status' => 1,
-                'message' => 'Succeed delete competition',
-            ];
-
-            return response()->json($responseData, 200);
-        } catch (Exception $exception) {
-            $responseData = [
-                'status' => 0,
-                'message' => $exception->getMessage(),
-            ];
-
-            return response()->json($responseData, 400);
-        }
     }
 }
