@@ -61,7 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('teams/{teamId}/join', [JoinTeamController::class, 'store']);
     Route::delete('teams/{teamId}/members/{memberId}', DeleteTeamMemberController::class);
     Route::post('individual/{competitionSlug}', JoinIndividualCompetitionController::class);
-    Route::post('/profile', [ParticipantController::class, 'update']);
+    Route::post('/profile/update', [ParticipantController::class, 'update']);
     Route::get('competitions/mine', CompetitionMineController::class);
     Route::post('payment/{teamId}', [PaymentController::class, 'store']);
     Route::post('payment/{teamId}/payment-status', [PaymentStatusController::class, 'update']);
