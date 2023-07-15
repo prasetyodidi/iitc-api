@@ -12,34 +12,26 @@ class PaymentController extends Controller
 {
     public function store(StorePaymentRequest $request, string $teamId): JsonResponse
     {
-        try {
-            $team = Team::query()->findOrFail($teamId);
-            $receiptUrl = $request->file('proveOfPayment')->store('receipt', ['disk' => 'public']);
-            $paymentData = [
-                'team_id' => $team->id,
-                'transfer_receipt' => $receiptUrl,
-            ];
+        $this->authorize('create', [Payment::class, new Payment(), Team::query()->findOrFail($teamId)]);
+        $team = Team::query()->findOrFail($teamId);
+        $receiptUrl = $request->file('proveOfPayment')->store('receipt', ['disk' => 'public']);
+        $paymentData = [
+            'team_id' => $team->id,
+            'transfer_receipt' => $receiptUrl,
+        ];
 
-            Payment::query()->create($paymentData);
+        Payment::query()->create($paymentData);
 
-            $responseData = [
-                'status' => 1,
-                'message' => 'success post proof of payment',
-                'data' => [
-                    'team' => [
-                        'teamId' => $teamId
-                    ]
+        $responseData = [
+            'status' => 1,
+            'message' => 'success post proof of payment',
+            'data' => [
+                'team' => [
+                    'teamId' => $teamId
                 ]
-            ];
+            ]
+        ];
 
-            return response()->json($responseData);
-        } catch (Exception $exception) {
-            $responseData = [
-                'status' => 0,
-                'message' => $exception->getMessage(),
-            ];
-
-            return response()->json($responseData, 400);
-        }
+        return response()->json($responseData);
     }
 }
