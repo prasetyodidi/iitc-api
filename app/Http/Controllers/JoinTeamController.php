@@ -12,12 +12,12 @@ use Spatie\FlareClient\Http\Exceptions\NotFound;
 
 class JoinTeamController extends Controller
 {
-    public function store(StoreJoinTeamRequest $request, string $teamId): JsonResponse
+    public function store(StoreJoinTeamRequest $request): JsonResponse
     {
         try {
-            $team = Team::query()->findOrFail($teamId);
-            $user = auth()->user();
             $code = $request->input('code');
+            $team = Team::query()->where('code', $code)->firstOrFail();
+            $user = auth()->user();
 
             // code not found
             if ($code != $team->code) {
