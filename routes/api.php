@@ -30,6 +30,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('', fn() => 'ok! @iitc');
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -61,7 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('teams/join', [JoinTeamController::class, 'store']);
     Route::delete('teams/{teamId}/members/{memberId}', DeleteTeamMemberController::class);
     Route::post('individual/{competitionSlug}', JoinIndividualCompetitionController::class);
-    Route::post('/profile/update', [ParticipantController::class, 'update']);
+    Route::post('profile/update', [ParticipantController::class, 'update']);
     Route::get('competitions/mine', CompetitionMineController::class);
     Route::post('payment/{teamId}', [PaymentController::class, 'store']);
     Route::post('payment/{teamId}/payment-status', [PaymentStatusController::class, 'update']);
