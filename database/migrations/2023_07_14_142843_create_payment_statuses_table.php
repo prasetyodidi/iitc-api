@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\PaymentStatus;
+use App\Helpers\PaymentStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,12 +17,12 @@ return new class extends Migration
             $table->enum(
                 'status',
                 [
-                    PaymentStatus::Invalid->value,
-                    PaymentStatus::Pending->value,
-                    PaymentStatus::Valid->value
+                    PaymentStatus::INVALID,
+                    PaymentStatus::PENDING,
+                    PaymentStatus::VALID
                 ]
             )
-                ->default(PaymentStatus::Pending->value);
+                ->default(PaymentStatus::PENDING);
             $table->string('reason');
             $table->timestamps();
         });

@@ -55,6 +55,7 @@ class CompetitionMineController extends Controller
         return [
             'teamId' => $team->id,
             'competitionName' => $team->competition->name,
+            'cSlug' => $team->competition->slug,
             'teamName' => $team->name,
             'avatar' => $team->avatar,
             'isSubmit' => isset($team->submission),

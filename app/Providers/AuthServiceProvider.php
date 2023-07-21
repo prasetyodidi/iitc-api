@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Enums\PaymentStatus;
+use App\Models\PaymentStatus;
 use App\Models\Category;
 use App\Models\Competition;
 use App\Models\Payment;
