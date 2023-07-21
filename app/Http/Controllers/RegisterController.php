@@ -46,12 +46,12 @@ class RegisterController extends Controller
                     "id" => $user->id,
                     "fullName" => $user->name,
                     "email" => $user->email,
-                    'verifyEmail' => [
-                        'id' => $user->id,
-                        'hash' => $hash,
-                        'expire' => $expire,
-                        'signature' => $signature,
-                    ],
+                ],
+                'verifyEmail' => [
+                    'id' => $user->id,
+                    'hash' => $hash,
+                    'expires' => $expire,
+                    'signature' => $signature,
                 ],
             ],
         ];
