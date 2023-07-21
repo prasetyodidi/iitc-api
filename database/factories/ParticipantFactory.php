@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Enums\Gender;
-use App\Enums\Grade;
+use App\Helpers\Gender;
+use App\Helpers\Grade;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,9 +21,9 @@ class ParticipantFactory extends Factory
         $isStudent = fake()->boolean;
         $isMale = fake()->boolean;
         return [
-            'grade' => $isStudent ? Grade::Student : Grade::CollegeStudent,
+            'grade' => $isStudent ? Grade::STUDENT : Grade::COLLEGE_STUDENT,
             'institution' => fake()->company,
-            'gender' => $isMale ? Gender::Male : Gender::Female,
+            'gender' => $isMale ? Gender::MALE : Gender::FEMALE,
             'student_id_number' => fake()->bothify('??##??##??###'),
             'avatar' => fake()->imageUrl,
             'photo_identity' => fake()->imageUrl,

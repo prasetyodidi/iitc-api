@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\PaymentStatus as PaymentStatusEnum;
+use App\Helpers\PaymentStatus as PaymentStatusHelper;
 use App\Http\Requests\UpdatePaymentStatusRequest;
 use App\Models\PaymentStatus;
 use App\Models\Team;
@@ -18,7 +18,7 @@ class PaymentStatusController extends Controller
 
         $paymentStatusData = [
             'team_id' => $team->id,
-            'status' => $request->input('isApprove') ? PaymentStatusEnum::Valid : PaymentStatusEnum::Invalid,
+            'status' => $request->input('isApprove') ? PaymentStatusHelper::VALID : PaymentStatusHelper::INVALID,
             'reason' => $request->input('reason'),
         ];
 
