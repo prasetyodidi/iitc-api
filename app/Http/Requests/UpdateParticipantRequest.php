@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Gender;
-use App\Enums\Grade;
+use App\Helpers\Gender;
+use App\Helpers\Grade;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class UpdateParticipantRequest extends FormRequest
 {
@@ -27,10 +27,10 @@ class UpdateParticipantRequest extends FormRequest
         $stringValidation = 'required|string|max:255';
         return [
             'fullName' => $stringValidation,
-            'grade' => [new Enum(Grade::class), 'required'],
+            'grade' => [Rule::in([Grade::STUDENT, Grade::COLLEGE_STUDENT]), 'required'],
             'institution' => $stringValidation,
             'studentId' => $stringValidation,
-            'gender' => [new Enum(Gender::class), 'required'],
+            'gender' => [Rule::in([Gender::MALE, Gender::FEMALE]), 'required'],
             'phone' => 'required|numeric',
             'avatar' => 'required|file|mimes:png,jpg|max:5120',
             'photoIdentity' => 'required|file|mimes:png,jpg|max:10240',
