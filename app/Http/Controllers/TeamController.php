@@ -55,7 +55,9 @@ class TeamController extends Controller
         $this->authorize('view', Team::query()->find($teamId));
         $team = Team::query()->with([
             'leader',
-            'members:name,email'
+            'leader.participant:avatar',
+            'members:id,name,email',
+            'members.participant:user_id,avatar'
         ])->findOrFail($teamId);
         $teamResponse = [
             'name' => $team->name,
@@ -67,6 +69,7 @@ class TeamController extends Controller
             'leader' => [
                 'name' => $team->leader->name,
                 'email' => $team->leader->email,
+                'avatar' => $team->leader->participant->avatar ?? null,
             ],
             'members' => $team->members,
         ];
