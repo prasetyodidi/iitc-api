@@ -10,41 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ParticipantController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Participant $participant)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Participant $participant)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateParticipantRequest $request): JsonResponse
     {
         try {
@@ -56,8 +21,9 @@ class ParticipantController extends Controller
             ];
             $user->update($userData);
 
-            $avatar = $request->file('avatar')->store('user/avatar', ['disk' => 'public']);
-            $photoIdentity = $request->file('photoIdentity')->store('participant', ['disk' => 'local']);
+            $avatar = $request->file('avatar')->store('participant/avatar', ['disk' => 'public']);
+            $photoIdentity = $request->file('photoIdentity')->store('participant/photo-identity', ['disk' => 'local']);
+            $twibbon = $request->file('twibbon')->store('participant/twibbon', ['disk' => 'local']);
             $profileData = [
                 'grade' => $request->input('grade'),
                 'institution' => $request->input('institution'),
@@ -65,6 +31,7 @@ class ParticipantController extends Controller
                 'gender' => $request->input('gender'),
                 'photo_identity' => $photoIdentity,
                 'avatar' => url('/') . Storage::url($avatar),
+                'twibbon' => url('/') . Storage::url($twibbon),
             ];
             $detail = Participant::query()->updateOrCreate(['user_id' => auth()->id()], $profileData);
 
@@ -86,13 +53,5 @@ class ParticipantController extends Controller
 
             return response()->json($responseData, 400);
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Participant $participant)
-    {
-        //
     }
 }
