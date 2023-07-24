@@ -27,6 +27,7 @@ class ParticipantFactory extends Factory
             'student_id_number' => fake()->bothify('??##??##??###'),
             'avatar' => fake()->imageUrl,
             'photo_identity' => fake()->imageUrl,
+            'twibbon' => fake()->imageUrl,
         ];
     }
 }
