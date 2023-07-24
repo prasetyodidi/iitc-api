@@ -34,6 +34,7 @@ class UpdateParticipantRequest extends FormRequest
             'phone' => 'required|numeric',
             'avatar' => 'required|file|mimes:png,jpg|max:5120',
             'photoIdentity' => 'required|file|mimes:png,jpg|max:10240',
+            'twibbon' => 'required|file|mimes:png,jpg|max:5120',
         ];
     }
 }
