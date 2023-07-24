@@ -51,6 +51,7 @@ class RoleAndPermissionSeeder extends Seeder
             'guard_name' => 'web',
         ]);
         $permissions = [
+            'List Teams',
             'Create Category',
             'Update Category',
             'Delete Category',

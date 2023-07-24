@@ -14,12 +14,37 @@ use Illuminate\Support\Str;
 
 class TeamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $this->authorize('viewAny', Team::class);
+        $teams = Team::query()->with([
+            'paymentStatus',
+            'payment',
+        ])->get();
+        $teamsResponse = [];
+        foreach ($teams as $team) {
+            $paymentStatus = isset($team->payment) ? PaymentStatus::PENDING : null;
+            $paymentStatus = $team->paymentStatus->status ?? $paymentStatus;
+            $teamResponse = [
+                'name' => $team->name,
+                'code' => $team->code,
+                'title' => $team->title,
+                'isActive' => $paymentStatus,
+                'isSubmit' => isset($team->submission),
+                'avatar' => $team->avatar,
+            ];
+            $teamsResponse[] = $teamResponse;
+        }
+
+        $responseData = [
+            'status' => 1,
+            'message' => 'Succeed get detail team',
+            'data' => [
+                'teams' => $teamsResponse,
+            ],
+        ];
+
+        return response()->json($responseData, 200);
     }
 
     public function store(StoreTeamRequest $request, string $competitionSlug): JsonResponse

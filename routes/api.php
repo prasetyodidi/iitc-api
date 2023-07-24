@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('', [CompetitionController::class, 'destroy']);
     });
     Route::post('competitions', [CompetitionController::class, 'store']);
+    Route::get('teams', [TeamController::class, 'index']);
     Route::post('teams/{competitionSlug}', [TeamController::class, 'store']);
     Route::get('teams/{teamId}', [TeamController::class, 'show']);
     Route::post('teams/{teamId}/update', [TeamController::class, 'update']);
