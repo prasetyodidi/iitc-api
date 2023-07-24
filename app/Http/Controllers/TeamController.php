@@ -26,6 +26,7 @@ class TeamController extends Controller
             $paymentStatus = isset($team->payment) ? PaymentStatus::PENDING : null;
             $paymentStatus = $team->paymentStatus->status ?? $paymentStatus;
             $teamResponse = [
+                'id' => $team->id,
                 'name' => $team->name,
                 'code' => $team->code,
                 'title' => $team->title,
