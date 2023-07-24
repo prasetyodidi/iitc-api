@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\PaymentStatus;
 use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
 use App\Models\Competition;
@@ -54,16 +55,20 @@ class TeamController extends Controller
     {
         $this->authorize('view', Team::query()->find($teamId));
         $team = Team::query()->with([
+            'paymentStatus',
+            'payment',
             'leader',
             'leader.participant:avatar',
             'members:id,name,email',
             'members.participant:user_id,avatar'
         ])->findOrFail($teamId);
+        $paymentStatus = isset($team->payment) ? PaymentStatus::PENDING : null;
+        $paymentStatus = $team->paymentStatus->status ?? $paymentStatus;
         $teamResponse = [
             'name' => $team->name,
             'code' => $team->code,
             'title' => $team->title,
-            'isActive' => $team->is_active ? 'Pending' : 'Active',
+            'isActive' => $paymentStatus,
             'isSubmit' => isset($team->submission),
             'avatar' => $team->avatar,
             'leader' => [
