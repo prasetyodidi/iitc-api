@@ -66,4 +66,9 @@ class TeamPolicy
     {
         return $user->hasPermissionTo('Force Delete Team');
     }
+
+    public function detailPayment(User $user): bool
+    {
+        return $user->hasPermissionTo('Detail Payment Team');
+    }
 }

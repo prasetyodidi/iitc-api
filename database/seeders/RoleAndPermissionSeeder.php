@@ -40,6 +40,10 @@ class RoleAndPermissionSeeder extends Seeder
                 ]);
             }
         }
+        Permission::firstOrCreate([
+            'name' => "Detail Payment Team",
+            'guard_name' => 'web',
+        ]);
 
         Role::create([
             'name' => 'Super Admin',
@@ -51,6 +55,7 @@ class RoleAndPermissionSeeder extends Seeder
             'guard_name' => 'web',
         ]);
         $permissions = [
+            'Detail Payment Team',
             'List Teams',
             'Create Category',
             'Update Category',

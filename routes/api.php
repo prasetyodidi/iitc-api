@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminGetDetailTeamController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\CompetitionMineController;
@@ -59,6 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('teams', [TeamController::class, 'index']);
     Route::post('teams/{competitionSlug}', [TeamController::class, 'store']);
     Route::get('teams/{teamId}', [TeamController::class, 'show']);
+    Route::get('teams/{teamId}/admin', [AdminGetDetailTeamController::class, 'show']);
     Route::post('teams/{teamId}/update', [TeamController::class, 'update']);
     Route::delete('teams/{teamId}', [TeamController::class, 'destroy']);
     Route::put('teams/join', [JoinTeamController::class, 'store']);
