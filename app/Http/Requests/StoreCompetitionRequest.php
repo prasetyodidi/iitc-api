@@ -23,7 +23,7 @@ class StoreCompetitionRequest extends FormRequest
     {
         return [
             // max in kilobytes
-            'cover' => 'file|mimes:png,jpg|max:5120',
+            'cover' => 'required|file|mimes:png,jpg|max:5120',
             'name' => 'required|string:max:255',
             'isIndividu' => 'required|boolean',
             'categories.*' => 'required|numeric',
