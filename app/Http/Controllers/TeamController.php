@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\PaymentStatus;
 use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
 use App\Models\Competition;
@@ -13,12 +14,38 @@ use Illuminate\Support\Str;
 
 class TeamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $this->authorize('viewAny', Team::class);
+        $teams = Team::query()->with([
+            'paymentStatus',
+            'payment',
+        ])->get();
+        $teamsResponse = [];
+        foreach ($teams as $team) {
+            $paymentStatus = isset($team->payment) ? PaymentStatus::PENDING : null;
+            $paymentStatus = $team->paymentStatus->status ?? $paymentStatus;
+            $teamResponse = [
+                'id' => $team->id,
+                'name' => $team->name,
+                'code' => $team->code,
+                'title' => $team->title,
+                'isActive' => $paymentStatus,
+                'isSubmit' => isset($team->submission),
+                'avatar' => $team->avatar,
+            ];
+            $teamsResponse[] = $teamResponse;
+        }
+
+        $responseData = [
+            'status' => 1,
+            'message' => 'Succeed get detail team',
+            'data' => [
+                'teams' => $teamsResponse,
+            ],
+        ];
+
+        return response()->json($responseData, 200);
     }
 
     public function store(StoreTeamRequest $request, string $competitionSlug): JsonResponse
@@ -54,19 +81,27 @@ class TeamController extends Controller
     {
         $this->authorize('view', Team::query()->find($teamId));
         $team = Team::query()->with([
+            'paymentStatus',
+            'payment',
             'leader',
-            'members:name,email'
+            'leader.participant:avatar',
+            'members:id,name,email',
+            'members.participant:user_id,avatar'
         ])->findOrFail($teamId);
+        $paymentStatus = isset($team->payment) ? PaymentStatus::PENDING : null;
+        $paymentStatus = $team->paymentStatus->status ?? $paymentStatus;
         $teamResponse = [
+            'id' => $team->id,
             'name' => $team->name,
             'code' => $team->code,
             'title' => $team->title,
-            'isActive' => $team->is_active ? 'Pending' : 'Active',
+            'isActive' => $paymentStatus,
             'isSubmit' => isset($team->submission),
             'avatar' => $team->avatar,
             'leader' => [
                 'name' => $team->leader->name,
                 'email' => $team->leader->email,
+                'avatar' => $team->leader->participant->avatar ?? null,
             ],
             'members' => $team->members,
         ];
@@ -94,7 +129,7 @@ class TeamController extends Controller
         if ($isUploadAvatar) {
             $oldAvatar = $team->avatar;
             $avatar = $request->file('avatar')->store('team/avatar', ['disk' => 'public']);
-            $teamData['avatar'] = url('/') . Storage::url($avatar);
+            $teamData['avatar'] = Storage::disk('public')->url($avatar);
             if ($oldAvatar != null && Storage::exists($oldAvatar)) {
                 Storage::disk('public')->delete($oldAvatar);
             }
@@ -107,9 +142,9 @@ class TeamController extends Controller
                 ->storeAs(
                     "submission/$uuidFolder",
                     $originalFileName,
-                    ['disk' => 'local']
+                    ['disk' => 'public']
                 );
-            $teamData['submission'] = $submission;
+            $teamData['submission'] = Storage::disk('public')->url($submission);
             $teamData['submission_file_name'] = $originalFileName;
         }
 

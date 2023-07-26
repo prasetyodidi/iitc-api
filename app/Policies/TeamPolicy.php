@@ -13,7 +13,7 @@ class TeamPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo('List Teams');
     }
 
     /**
@@ -65,5 +65,10 @@ class TeamPolicy
     public function forceDelete(User $user, Team $team): bool
     {
         return $user->hasPermissionTo('Force Delete Team');
+    }
+
+    public function detailPayment(User $user): bool
+    {
+        return $user->hasPermissionTo('Detail Payment Team');
     }
 }

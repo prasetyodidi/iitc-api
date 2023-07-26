@@ -6,6 +6,7 @@ use App\Helpers\Gender;
 use App\Helpers\Grade;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationRuleParser;
 
 class UpdateParticipantRequest extends FormRequest
 {
@@ -20,7 +21,7 @@ class UpdateParticipantRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRuleParser|array|string>
      */
     public function rules(): array
     {
@@ -34,6 +35,7 @@ class UpdateParticipantRequest extends FormRequest
             'phone' => 'required|numeric',
             'avatar' => 'required|file|mimes:png,jpg|max:5120',
             'photoIdentity' => 'required|file|mimes:png,jpg|max:10240',
+            'twibbon' => 'required|file|mimes:png,jpg|max:5120',
         ];
     }
 }
