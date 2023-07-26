@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePaymentRequest;
 use App\Models\Payment;
 use App\Models\Team;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,7 +17,7 @@ class PaymentController extends Controller
         $receiptUrl = $request->file('proveOfPayment')->store('receipt', ['disk' => 'public']);
         $paymentData = [
             'team_id' => $team->id,
-            'transfer_receipt' => url('/') . Storage::url($receiptUrl),
+            'transfer_receipt' => Storage::disk('public')->url($receiptUrl),
         ];
 
         $payment = Payment::query()->updateOrCreate($paymentData);
@@ -28,9 +27,9 @@ class PaymentController extends Controller
             'message' => 'success post proof of payment',
             'data' => [
                 'team' => [
-                    'teamId' => $teamId
+                    'teamId' => $teamId,
                 ],
-                'payment' => $payment
+                'payment' => $payment,
             ]
         ];
 

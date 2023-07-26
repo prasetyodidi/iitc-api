@@ -10,7 +10,6 @@ use App\Models\Competition;
 use App\Models\Criterion;
 use App\Models\TechStack;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 
@@ -57,7 +56,7 @@ class CompetitionController extends Controller
             'price' => $request->input('price'),
             'description' => $request->input('description'),
             'guide_book' => $request->input('guideBookLink'),
-            'cover' => url('/') . Storage::url($cover),
+            'cover' => Storage::disk('public')->url($cover),
         ];
 
         $competition = Competition::query()->create($competitionData);
@@ -159,7 +158,7 @@ class CompetitionController extends Controller
             'price' => $request->input('price'),
             'description' => $request->input('description'),
             'guide_book' => $request->input('guideBookLink'),
-            'cover' => url('/') . Storage::url($cover),
+            'cover' => Storage::disk('public')->url($cover),
         ];
 
         $competition->update($competitionData);
