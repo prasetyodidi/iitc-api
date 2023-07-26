@@ -129,7 +129,7 @@ class TeamController extends Controller
         if ($isUploadAvatar) {
             $oldAvatar = $team->avatar;
             $avatar = $request->file('avatar')->store('team/avatar', ['disk' => 'public']);
-            $teamData['avatar'] = url('/') . Storage::url($avatar);
+            $teamData['avatar'] = Storage::disk('public')->url($avatar);
             if ($oldAvatar != null && Storage::exists($oldAvatar)) {
                 Storage::disk('public')->delete($oldAvatar);
             }
@@ -142,9 +142,9 @@ class TeamController extends Controller
                 ->storeAs(
                     "submission/$uuidFolder",
                     $originalFileName,
-                    ['disk' => 'local']
+                    ['disk' => 'public']
                 );
-            $teamData['submission'] = $submission;
+            $teamData['submission'] = Storage::disk('public')->url($submission);
             $teamData['submission_file_name'] = $originalFileName;
         }
 

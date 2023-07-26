@@ -22,16 +22,16 @@ class ParticipantController extends Controller
             $user->update($userData);
 
             $avatar = $request->file('avatar')->store('participant/avatar', ['disk' => 'public']);
-            $photoIdentity = $request->file('photoIdentity')->store('participant/photo-identity', ['disk' => 'local']);
-            $twibbon = $request->file('twibbon')->store('participant/twibbon', ['disk' => 'local']);
+            $photoIdentity = $request->file('photoIdentity')->store('participant/photo-identity', ['disk' => 'public']);
+            $twibbon = $request->file('twibbon')->store('participant/twibbon', ['disk' => 'public']);
             $profileData = [
                 'grade' => $request->input('grade'),
                 'institution' => $request->input('institution'),
                 'student_id_number' => $request->input('studentId'),
                 'gender' => $request->input('gender'),
-                'photo_identity' => $photoIdentity,
-                'avatar' => url('/') . Storage::url($avatar),
-                'twibbon' => url('/') . Storage::url($twibbon),
+                'photo_identity' => Storage::disk('public')->url($photoIdentity),
+                'avatar' => Storage::disk('public')->url($avatar),
+                'twibbon' =>Storage::disk('public')->url($twibbon),
             ];
             $detail = Participant::query()->updateOrCreate(['user_id' => auth()->id()], $profileData);
 
