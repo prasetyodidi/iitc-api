@@ -168,9 +168,11 @@ class CompetitionController extends Controller
 
         $criteriaData = $this->getCriteriaToDatabase(json_decode($request->criteria), $competition->id);
         $techStacksData = $this->getTechStacksToDatabase(json_decode($request->techStacks), $competition->id);
+        $categoriesData = $this->getCategoriesToDatabase($request->categories, $competition->id);
 
         Criterion::query()->insert($criteriaData);
         TechStack::query()->insert($techStacksData);
+        $competition->categories()->sync($categoriesData);
 
         $competition['criteria'] = $criteriaData;
         $competition['techStacks'] = $techStacksData;
@@ -198,6 +200,20 @@ class CompetitionController extends Controller
         ];
 
         return response()->json($responseData, 200);
+    }
+
+    private function getCategoriesToDatabase(string $categories, int $competitionId): array
+    {
+        $arrayCategories = json_decode($categories);
+        $categoriesData = [];
+        foreach ($arrayCategories as $category) {
+            $categoriesData[] = [
+                'competition_id' => $competitionId,
+                'category_id' => $category,
+            ];
+        }
+
+        return $categoriesData;
     }
 
     private function getCriteriaToDatabase(array $criteria, int $competitionId): array
