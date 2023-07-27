@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 
 class TeamController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
         $this->authorize('viewAny', Team::class);
         $teams = Team::query()->with([
@@ -39,7 +39,7 @@ class TeamController extends Controller
 
         $responseData = [
             'status' => 1,
-            'message' => 'Succeed get detail team',
+            'message' => 'Succeed get all team',
             'data' => [
                 'teams' => $teamsResponse,
             ],
