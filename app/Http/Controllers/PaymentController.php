@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PaymentStatus;
+use App\Helpers\PaymentStatus as PaymentStatusHelper;
 use App\Http\Requests\StorePaymentRequest;
 use App\Models\Payment;
 use App\Models\Team;
@@ -21,6 +23,8 @@ class PaymentController extends Controller
         ];
 
         $payment = Payment::query()->updateOrCreate($paymentData);
+        $prevPaymentStatus = PaymentStatus::query()->find($payment->id);
+        $prevPaymentStatus?->update(['isApprove' => PaymentStatusHelper::PENDING]);
 
         $responseData = [
             'status' => 1,
