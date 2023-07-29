@@ -33,9 +33,9 @@ class UpdateParticipantRequest extends FormRequest
             'studentId' => $stringValidation,
             'gender' => [Rule::in([Gender::MALE, Gender::FEMALE]), 'required'],
             'phone' => 'required|numeric',
-            'avatar' => 'required|file|mimes:png,jpg|max:5120',
-            'photoIdentity' => 'required|file|mimes:png,jpg|max:10240',
-            'twibbon' => 'required|file|mimes:png,jpg|max:5120',
+            'avatar' => 'file|mimes:png,jpg|max:5120',
+            'photoIdentity' => 'file|mimes:png,jpg|max:10240',
+            'twibbon' => 'file|mimes:png,jpg|max:5120',
         ];
     }
 }
