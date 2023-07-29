@@ -33,12 +33,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('', fn() => 'ok! @iitc');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::post('logout', [LogoutController::class, 'store']);
+
+    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('logout', [LogoutController::class, 'store']);
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::post('competitions/categories', [CategoryController::class, 'store']);
 
@@ -46,10 +53,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('', [CategoryController::class, 'update']);
         Route::delete('', [CategoryController::class, 'destroy']);
     });
-
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
 
     Route::prefix('competitions/{slug}')->group(function () {
         // using method put, request body not working
