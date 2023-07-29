@@ -148,9 +148,6 @@ class CompetitionController extends Controller
         $this->authorize('update', Competition::query()->where('slug', $slug)->firstOrFail());
         $competition = Competition::query()->where('slug', $slug)->firstOrFail();
 
-        $cover = $request->file('cover')->store('competition/avatar', ['disk' => 'public']);
-        Storage::disk('public')->delete($competition->cover);
-
         $competitionData = [
             'name' => $request->input('name'),
             'deadline' => $request->input('deadline'),
@@ -158,8 +155,14 @@ class CompetitionController extends Controller
             'price' => $request->input('price'),
             'description' => $request->input('description'),
             'guide_book' => $request->input('guideBookLink'),
-            'cover' => Storage::disk('public')->url($cover),
         ];
+
+        if ($request->file('cover') != null) {
+            $cover = $request->file('cover')->store('competition/avatar', ['disk' => 'public']);
+            $competitionData['cover'] = Storage::disk('public')->url($cover);
+
+            Storage::disk('public')->delete($competition->cover);
+        }
 
         $competition->update($competitionData);
 

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('price');
             $table->text('description');
             $table->string('guide_book');
-            $table->string('cover');
+            $table->string('cover')->nullable();
             $table->timestamps();
 
         });

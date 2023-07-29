@@ -125,7 +125,7 @@ class TeamController extends Controller
             'name' => $request->name,
             'title' => $request->title,
         ];
-        $isUploadAvatar = $request->file('avatar') !== null;
+        $isUploadAvatar = $request->file('avatar') != null;
         if ($isUploadAvatar) {
             $oldAvatar = $team->avatar;
             $avatar = $request->file('avatar')->store('team/avatar', ['disk' => 'public']);
