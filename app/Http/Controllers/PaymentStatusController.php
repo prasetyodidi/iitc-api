@@ -22,7 +22,7 @@ class PaymentStatusController extends Controller
             'reason' => $request->input('reason'),
         ];
 
-        $paymentStatus = PaymentStatus::query()->create($paymentStatusData);
+        $paymentStatus = PaymentStatus::query()->updateOrCreate($paymentStatusData);
 
         $responseData = [
             'status' => 1,

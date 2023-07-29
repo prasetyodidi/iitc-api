@@ -10,6 +10,9 @@ class PaymentStatus extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'team_id';
+    public $incrementing = false;
+
     protected $guarded = [];
 
     public function team(): BelongsTo

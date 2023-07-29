@@ -22,9 +22,15 @@ class PaymentController extends Controller
             'transfer_receipt' => Storage::disk('public')->url($receiptUrl),
         ];
 
-        $payment = Payment::query()->updateOrCreate($paymentData);
-        $prevPaymentStatus = PaymentStatus::query()->find($payment->id);
-        $prevPaymentStatus?->update(['isApprove' => PaymentStatusHelper::PENDING]);
+        $payment = Payment::query()->updateOrCreate(
+            ['team_id' => $team->id],
+            $paymentData,
+        );
+        $prevPaymentStatus = PaymentStatus::query()->where('team_id', $team->id)->first();
+        if ($prevPaymentStatus != null) {
+            $prevPaymentStatus->status = PaymentStatusHelper::PENDING;
+            $prevPaymentStatus->save();
+        }
 
         $responseData = [
             'status' => 1,
