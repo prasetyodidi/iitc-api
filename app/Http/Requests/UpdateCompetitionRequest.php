@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCompetitionRequest extends FormRequest
@@ -17,13 +18,13 @@ class UpdateCompetitionRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, Rule|array|string>
      */
     public function rules(): array
     {
         return [
             // max in kilobytes
-            'cover' => 'required|file|mimes:png,jpg|max:5120',
+            'cover' => 'file|mimes:png,jpg|max:5120',
             'name' => 'required|string:max:255',
             'isIndividu' => 'required|boolean',
             'categories.*' => 'string',
