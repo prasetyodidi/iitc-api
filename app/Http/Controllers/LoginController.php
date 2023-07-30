@@ -23,7 +23,8 @@ class LoginController extends Controller
             "status" => 1,
             "message" => "berhasil login",
             "data" => [
-                "access_token" => $token
+                "access_token" => $token,
+                'email_verified_at' => $user->email_verified_at,
             ]
         ];
         return response()->json($data, 200);
