@@ -35,6 +35,10 @@ Route::get('', fn() => 'ok! @iitc');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [LogoutController::class, 'store']);
+
+    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
@@ -45,9 +49,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::delete('', [CategoryController::class, 'destroy']);
     });
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
 
     Route::prefix('competitions/{slug}')->group(function () {
         // using method put, request body not working

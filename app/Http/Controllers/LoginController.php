@@ -6,13 +6,14 @@ use App\Exceptions\AuthenticationException;
 use App\Http\Requests\StoreLoginRequest;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    public function store(StoreLoginRequest $request)
+    public function store(StoreLoginRequest $request): JsonResponse
     {
-        $user = User::where("email", $request->email)->firstOrFail();
+        $user = User::query()->where("email", $request->email)->firstOrFail();
         if (!Hash::check($request->password, $user->password)) {
             throw new AuthenticationException("Invalid Password");
         }
