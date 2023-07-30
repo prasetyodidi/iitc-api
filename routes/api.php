@@ -33,13 +33,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('', fn() => 'ok! @iitc');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [LogoutController::class, 'store']);
+});
 
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('competitions/categories', [CategoryController::class, 'store']);
 
     Route::prefix('competitions/categories/{categoryId}')->group(function () {
