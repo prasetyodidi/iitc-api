@@ -31,6 +31,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/debug-sentry', function () {
+    throw new Exception('My first Sentry error!');
+});
+
 Route::get('', fn() => 'ok! @iitc');
 
 Route::middleware('auth:sanctum')->group(function () {
