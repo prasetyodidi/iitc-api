@@ -62,7 +62,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (ItemNotFoundException $exception) {
             return response()->json([
                 'status' => 0,
-                'message' => env('APP_ENV') == 'local' ? $exception->getMessage() : 'request error',
+                'message' => env('APP_ENV') == 'local' ? $exception->getMessage() : 'item not error',
             ], 400);
         });
 

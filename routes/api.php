@@ -37,12 +37,12 @@ Route::get('/debug-sentry', function () {
 
 Route::get('', fn() => 'ok! @iitc');
 
+Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [LogoutController::class, 'store']);
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
