@@ -44,7 +44,7 @@ class UserController extends Controller
                 "message" => "User tidak ada",
             ];
 
-            return response()->json($responseData);
+            return response()->json($responseData, 404);
         }
     }
 }
