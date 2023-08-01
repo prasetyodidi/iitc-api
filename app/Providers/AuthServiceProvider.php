@@ -6,10 +6,12 @@ use App\Models\PaymentStatus;
 use App\Models\Category;
 use App\Models\Competition;
 use App\Models\Payment;
+use App\Models\User;
 use App\Policies\CategoryPolicy;
 use App\Policies\CompetitionPolicy;
 use App\Policies\PaymentPolicy;
 use App\Policies\PaymentStatusPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -27,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         Competition::class => CompetitionPolicy::class,
         Payment::class => PaymentPolicy::class,
         PaymentStatus::class => PaymentStatusPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**
