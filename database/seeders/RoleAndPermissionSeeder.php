@@ -11,7 +11,7 @@ use Spatie\Permission\Models\Role;
 class RoleAndPermissionSeeder extends Seeder
 {
     private array $modules = [
-        'Category', 'Competition', 'Team', 'Participant', 'Payment', 'Payment Status'
+        'Category', 'Competition', 'Team', 'Participant', 'Payment', 'Payment Status', 'User'
     ];
 
     private array $pluralActions = ['List'];
@@ -64,6 +64,8 @@ class RoleAndPermissionSeeder extends Seeder
             'Update Competition',
             'Delete Competition',
             'Update Payment Status',
+            'List Users',
+            'Delete User',
         ];
         $admin->syncPermissions($permissions);
 

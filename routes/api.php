@@ -16,6 +16,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifyEmailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,10 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::get('/debug-sentry', function () {
+    throw new Exception('My first Sentry error!');
+});
 
 Route::get('', fn() => 'ok! @iitc');
 
@@ -49,6 +54,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::delete('', [CategoryController::class, 'destroy']);
     });
 
+    Route::get('users', [UserController::class, 'index']);
+    Route::delete('users/{userId}', [UserController::class, 'destroy']);
 
     Route::prefix('competitions/{slug}')->group(function () {
         // using method put, request body not working
