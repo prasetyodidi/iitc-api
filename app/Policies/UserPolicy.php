@@ -18,7 +18,7 @@ class UserPolicy
      */
     public function viewAny(User $user): Response|bool
     {
-        return $user->hasPermissionTo('List Users');
+        return $user->hasRole('Admin');
     }
 
     /**
@@ -30,6 +30,6 @@ class UserPolicy
      */
     public function delete(User $user, User $model): Response|bool
     {
-        return $user->hasPermissionTo('Delete User');
+        return $user->hasRole('Admin');
     }
 }
