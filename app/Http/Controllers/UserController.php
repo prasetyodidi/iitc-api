@@ -12,7 +12,7 @@ class UserController extends Controller
     public function index(): JsonResponse
     {
         $this->authorize('viewAny', User::class);
-        $users = User::query()->with('participant')->get();
+        $users = User::query()->role('User')->with('participant')->get();
 
         $responseData = [
             'status' => 1,
