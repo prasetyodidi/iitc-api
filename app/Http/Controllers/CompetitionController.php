@@ -123,6 +123,7 @@ class CompetitionController extends Controller
             'slug' => $result->slug,
             'cover' => $result->cover,
             'deadline' => $days,
+            'deadlineDate' => Carbon::parse($result->deadline)->format('Y-m-d'),
             'maxMembers' => $result->max_members,
             'description' => $result->description,
             'guideBookLink' => $result->guide_book,
