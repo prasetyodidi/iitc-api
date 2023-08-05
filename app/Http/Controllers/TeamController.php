@@ -19,6 +19,7 @@ class TeamController extends Controller
         $teams = Team::query()->with([
             'paymentStatus',
             'payment',
+            'leader'
         ])->get();
         $teamsResponse = [];
         foreach ($teams as $team) {
@@ -32,6 +33,7 @@ class TeamController extends Controller
                 'isActive' => $paymentStatus,
                 'isSubmit' => isset($team->submission),
                 'avatar' => $team->avatar,
+                'leaderName' => $team->leader->name,
             ];
             $teamsResponse[] = $teamResponse;
         }
@@ -85,7 +87,8 @@ class TeamController extends Controller
             'leader',
             'leader.participant:avatar',
             'members:id,name,email',
-            'members.participant:user_id,avatar'
+            'members.participant:user_id,avatar',
+            'competition'
         ])->findOrFail($teamId);
         $paymentStatus = isset($team->payment) ? PaymentStatus::PENDING : null;
         $paymentStatus = $team->paymentStatus->status ?? $paymentStatus;
