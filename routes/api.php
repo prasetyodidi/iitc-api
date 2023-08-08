@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TeamController as AdminTeamController;
 use App\Http\Controllers\AdminGetDetailTeamController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompetitionController;
@@ -77,6 +78,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('competitions/mine', CompetitionMineController::class);
     Route::post('payment/{teamId}', [PaymentController::class, 'store']);
     Route::post('payment/{teamId}/payment-status', [PaymentStatusController::class, 'update']);
+
+    // Admin
+    Route::prefix('admin')->group(function () {
+        Route::get('/teams', [AdminTeamController::class, 'index']);
+        Route::get('/teams/{teamId}', [AdminTeamController::class, 'show']);
+    });
 });
 
 Route::get('competitions/categories', [CategoryController::class, 'index']);
