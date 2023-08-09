@@ -19,7 +19,8 @@ class TeamController extends Controller
         $teams = Team::query()->with([
             'paymentStatus',
             'payment',
-            'leader'
+            'leader',
+            'competition'
         ])->get();
         $teamsResponse = [];
         foreach ($teams as $team) {
@@ -34,6 +35,7 @@ class TeamController extends Controller
                 'isSubmit' => isset($team->submission),
                 'avatar' => $team->avatar,
                 'leaderName' => $team->leader->name,
+                'competitionName' => $team->competition->name,
             ];
             $teamsResponse[] = $teamResponse;
         }
