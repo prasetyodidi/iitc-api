@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\PaymentStatus;
 use App\Models\Team;
 use App\Models\User;
 use Exception;
@@ -18,7 +19,11 @@ class CompetitionMineController extends Controller
                     'teams' => function ($query) {
                         $query->withCount('members');
                     },
-                    'teams.competition',
+                    'teams' => [
+                        'competition',
+                        'paymentStatus',
+                        'payment',
+                    ],
                     'asMembers' => function ($query) {
                         $query->withCount('members');
                     },
@@ -52,6 +57,9 @@ class CompetitionMineController extends Controller
 
     private function transformDBToResponseTeam(Team $team): array
     {
+        $paymentStatus = isset($team->payment) ? PaymentStatus::PENDING : null;
+        $paymentStatus = $team->paymentStatus->status ?? $paymentStatus;
+
         return [
             'teamId' => $team->id,
             'competitionName' => $team->competition->name,
@@ -61,6 +69,7 @@ class CompetitionMineController extends Controller
             'isSubmit' => isset($team->submission),
             'maxMembers' => $team->competition->max_members,
             'currentMembers' => $team->members_count,
+            'isActive' => $paymentStatus,
         ];
     }
 }
