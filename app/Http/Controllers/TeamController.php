@@ -138,18 +138,10 @@ class TeamController extends Controller
                 Storage::disk('public')->delete($oldAvatar);
             }
         }
-        $isUploadSubmission = $request->file('submission') !== null;
-        if ($isUploadSubmission) {
-            $uuidFolder = Str::uuid();
-            $originalFileName = $request->file('submission')->getClientOriginalName();
-            $submission = $request->file('submission')
-                ->storeAs(
-                    "submission/$uuidFolder",
-                    $originalFileName,
-                    ['disk' => 'public']
-                );
-            $teamData['submission'] = Storage::disk('public')->url($submission);
-            $teamData['submission_file_name'] = $originalFileName;
+
+        $isUploadSubmission = $request->input('submission') !== null;
+        if($isUploadSubmission) {
+            $teamData['submission'] = $request->input('submission');
         }
 
         $team->update($teamData);
