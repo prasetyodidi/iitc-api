@@ -26,7 +26,7 @@ class UpdateTeamRequest extends FormRequest
             'name' => 'required|string|max:255',
             'title' => 'required|string|max:255',
             'avatar' => 'file|mimes:png,jpg|max:5120',
-            'submission' => 'file|mimes:zip|max:512000',
+            'submission' => 'string|max:255',
         ];
     }
 }
