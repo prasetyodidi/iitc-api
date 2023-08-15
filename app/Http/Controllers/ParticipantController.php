@@ -63,6 +63,7 @@ class ParticipantController extends Controller
         $participant = Participant::query()->where('user_id', $user->id)->first();
         $detail = [];
         if ($participant == null) {
+            $profileData['user_id'] = $user->id;
             $detail = Participant::query()->create($profileData);
         } else {
             Participant::query()->where('user_id', $user->id)->update($profileData);
