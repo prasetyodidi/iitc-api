@@ -26,6 +26,7 @@ class UpdateParticipantRequest extends FormRequest
     public function rules(): array
     {
         $stringValidation = 'required|string|max:255';
+        $fileValidation = 'file|mimes:png,jpg,jpeg|max:3072';
         return [
             'fullName' => $stringValidation,
             'grade' => [Rule::in([Grade::STUDENT, Grade::COLLEGE_STUDENT]), 'required'],
@@ -33,9 +34,9 @@ class UpdateParticipantRequest extends FormRequest
             'studentId' => $stringValidation,
             'gender' => [Rule::in([Gender::MALE, Gender::FEMALE]), 'required'],
             'phone' => 'required|numeric',
-            'avatar' => 'file|mimes:png,jpg|max:5120',
-            'photoIdentity' => 'file|mimes:png,jpg|max:10240',
-            'twibbon' => 'file|mimes:png,jpg|max:5120',
+            'avatar' => $fileValidation,
+            'photoIdentity' => $fileValidation,
+            'twibbon' => $fileValidation,
         ];
     }
 }

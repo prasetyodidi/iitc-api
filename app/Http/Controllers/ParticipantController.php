@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateParticipantRequest;
 use App\Models\Participant;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 
@@ -41,18 +42,33 @@ class ParticipantController extends Controller
             'gender' => $request->input('gender'),
         ];
         if ($request->file('avatar') != null) {
-            $avatar = $request->file('avatar')->store('participant/avatar', ['disk' => 'public']);
+            $ext = $request->file('avatar')->getClientOriginalExtension();
+            $fileName = $user->name . '-' . $user->email . '-' . Carbon::now()->timestamp . '.' . $ext;
+            $avatar = $request->file('avatar')->storeAs('participant/avatar', $fileName, ['disk' => 'public']);
             $profileData['avatar'] = Storage::disk('public')->url($avatar);
         }
         if ($request->file('photoIdentity') != null) {
-            $photoIdentity = $request->file('photoIdentity')->store('participant/photo-identity', ['disk' => 'public']);
+            $ext = $request->file('photoIdentity')->getClientOriginalExtension();
+            $fileName = $user->name . '-' . $user->email . '-' . Carbon::now()->timestamp . '.' . $ext;
+            $photoIdentity = $request->file('photoIdentity')
+                ->storeAs('participant/photo-identity', $fileName, ['disk' => 'public']);
             $profileData['photo_identity'] = Storage::disk('public')->url($photoIdentity);
         }
         if ($request->file('twibbon') != null) {
-            $twibbon = $request->file('twibbon')->store('participant/twibbon', ['disk' => 'public']);
+            $ext = $request->file('twibbon')->getClientOriginalExtension();
+            $fileName = $user->name . '-' . $user->email . '-' . Carbon::now()->timestamp . '.' . $ext;
+            $twibbon = $request->file('twibbon')->storeAs('participant/twibbon', $fileName, ['disk' => 'public']);
             $profileData['twibbon'] = Storage::disk('public')->url($twibbon);
         }
-        $detail = Participant::query()->updateOrCreate(['user_id' => auth()->id()], $profileData);
+        $participant = Participant::query()->where('user_id', $user->id)->first();
+        $detail = [];
+        if ($participant == null) {
+            $profileData['user_id'] = $user->id;
+            $detail = Participant::query()->create($profileData);
+        } else {
+            Participant::query()->where('user_id', $user->id)->update($profileData);
+            $detail = $participant;
+        }
 
         $responseData = [
             'status' => 1,
