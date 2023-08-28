@@ -23,3 +23,5 @@ composer.lock
 
 /public/team
 /public/participant
+*.zip
+/public/receipt
