@@ -99,6 +99,7 @@ class TeamController extends Controller
             'name' => $team->name,
             'code' => $team->code,
             'title' => $team->title,
+            'submission' => $team->submission,
             'isActive' => $paymentStatus,
             'isSubmit' => isset($team->submission),
             'avatar' => $team->avatar,
