@@ -9,7 +9,6 @@ use App\Models\Competition;
 use App\Models\Team;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class TeamController extends Controller
 {
@@ -127,9 +126,11 @@ class TeamController extends Controller
         $this->authorize('Update', Team::query()->find($teamId));
         $team = Team::query()->findOrFail($teamId);
         $teamData = [
-            'name' => $request->name,
             'title' => $request->title,
         ];
+        if ($request->name != null) {
+            $teamData["name"] = $request->name;
+        }
         $isUploadAvatar = $request->file('avatar') != null;
         if ($isUploadAvatar) {
             $oldAvatar = $team->avatar;
