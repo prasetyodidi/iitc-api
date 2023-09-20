@@ -14,7 +14,7 @@ class TeamController extends Controller
         if (!auth()->user()->hasRole('Admin')) {
             throw new AccessDeniedHttpException('unauthorize');
         }
-        
+
         $queryTeams = Team::query()
         ->withCount('members')
         ->with([
@@ -91,6 +91,7 @@ class TeamController extends Controller
             'teamName' => $team->name,
             'avatar' => $team->avatar,
             'isSubmit' => isset($team->submission),
+            'submission' => $team->submission,
             'maxMembers' => $team->competition->max_members,
             'currentMembers' => $team->members_count,
         ];
