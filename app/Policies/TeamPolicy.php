@@ -38,8 +38,7 @@ class TeamPolicy
      */
     public function update(User $user, Team $team): bool
     {
-        return $user->hasPermissionTo('Update Team')
-                && $user->id == $team->leader_id;
+        return $user->hasPermissionTo('Update Team');
     }
 
     /**
