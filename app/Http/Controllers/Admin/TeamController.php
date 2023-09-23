@@ -19,7 +19,7 @@ class TeamController extends Controller
         ->withCount('members')
         ->with([
             'competition',
-            'leader'
+            'leader',
         ])->get();
 
         $teams = [];
@@ -88,12 +88,17 @@ class TeamController extends Controller
             'teamId' => $team->id,
             'competitionName' => $team->competition->name,
             'cSlug' => $team->competition->slug,
+            'cName' => $team->competition->name,
             'teamName' => $team->name,
             'avatar' => $team->avatar,
             'isSubmit' => isset($team->submission),
             'submission' => $team->submission,
             'maxMembers' => $team->competition->max_members,
             'currentMembers' => $team->members_count,
+            'leader' => [
+                'name' => $team->leader->name,
+                'email' => $team->leader->email,
+            ]
         ];
     }
 }
