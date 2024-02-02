@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TeamController as AdminTeamController;
 use App\Http\Controllers\AdminGetDetailTeamController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompetitionController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifyEmailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,15 +33,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('', fn() => 'ok! @iitc');
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/debug-sentry', function () {
+    throw new Exception('My first Sentry error!');
 });
 
+Route::get('', fn() => 'ok! @iitc');
+
+Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [LogoutController::class, 'store']);
 
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('competitions/categories', [CategoryController::class, 'store']);
 
     Route::prefix('competitions/categories/{categoryId}')->group(function () {
@@ -47,9 +55,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('', [CategoryController::class, 'destroy']);
     });
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
+    Route::get('users', [UserController::class, 'index']);
+    Route::delete('users/{userId}', [UserController::class, 'destroy']);
 
     Route::prefix('competitions/{slug}')->group(function () {
         // using method put, request body not working
@@ -66,10 +73,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('teams/join', [JoinTeamController::class, 'store']);
     Route::delete('teams/{teamId}/members/{memberId}', DeleteTeamMemberController::class);
     Route::post('individual/{competitionSlug}', JoinIndividualCompetitionController::class);
-    Route::post('profile/update', [ParticipantController::class, 'update']);
+    Route::get('profile', [ParticipantController::class, 'show']);
+    Route::post('profile', [ParticipantController::class, 'update']);
     Route::get('competitions/mine', CompetitionMineController::class);
     Route::post('payment/{teamId}', [PaymentController::class, 'store']);
     Route::post('payment/{teamId}/payment-status', [PaymentStatusController::class, 'update']);
+
+    // Admin
+    Route::prefix('admin')->group(function () {
+        Route::get('/teams', [AdminTeamController::class, 'index']);
+        Route::get('/teams/{teamId}', [AdminTeamController::class, 'show']);
+    });
 });
 
 Route::get('competitions/categories', [CategoryController::class, 'index']);

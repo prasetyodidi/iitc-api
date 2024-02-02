@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTeamRequest extends FormRequest
 {
@@ -17,7 +18,7 @@ class UpdateTeamRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, Rule|array|string>
      */
     public function rules(): array
     {
@@ -25,7 +26,7 @@ class UpdateTeamRequest extends FormRequest
             'name' => 'required|string|max:255',
             'title' => 'required|string|max:255',
             'avatar' => 'file|mimes:png,jpg|max:5120',
-            'submission' => 'file|mimes:zip|max:512000',
+            'submission' => 'string|max:255',
         ];
     }
 }

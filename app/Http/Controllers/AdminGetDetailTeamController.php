@@ -18,7 +18,8 @@ class AdminGetDetailTeamController extends Controller
             'leader',
             'leader.participant:avatar',
             'members:id,name,email',
-            'members.participant:user_id,avatar'
+            'members.participant:user_id,avatar',
+            'competition:id,name',
         ])->findOrFail($teamId);
         $paymentStatus = isset($team->payment) ? PaymentStatus::PENDING : null;
         $paymentStatus = $team->paymentStatus->status ?? $paymentStatus;
@@ -29,12 +30,9 @@ class AdminGetDetailTeamController extends Controller
             'isActive' => $paymentStatus,
             'isSubmit' => isset($team->submission),
             'avatar' => $team->avatar,
-            'transferReceipt' => $team->payment->transfer_receipt,
-            'leader' => [
-                'name' => $team->leader->name,
-                'email' => $team->leader->email,
-                'avatar' => $team->leader->participant->avatar ?? null,
-            ],
+            'transferReceipt' => $team->payment->transfer_receipt ?? null,
+            'competition' => $team->competition,
+            'leaderName' => $team->leader->name,
             'members' => $team->members,
         ];
 

@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payment_statuses', function (Blueprint $table) {
-            $table->unsignedBigInteger('team_id');
+            $table->unsignedBigInteger('team_id')->unique();
             $table->enum(
                 'status',
                 [

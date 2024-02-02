@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('gender');
             $table->string('student_id_number');
             $table->string('institution');
-            $table->string('avatar');
-            $table->string('photo_identity');
-            $table->string('twibbon');
+            $table->string('avatar')->nullable();
+            $table->string('photo_identity')->nullable();
+            $table->string('twibbon')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')

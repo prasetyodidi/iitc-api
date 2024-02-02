@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class VerifyEmailController extends Controller
 {
-    public function __invoke(EmailVerificationRequest $request): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
-        if ($request->user()->hasVerifiedEmail()) {
-            $responseData = [
-                "status" => 1,
-                "message" => "User is verified",
-            ];
+        $user = User::query()->find($request->route('id'));
 
-            return response()->json($responseData, 200);
+        if (!hash_equals((string) $request->route('hash'), sha1($user->getEmailForVerification()))) {
+            throw new AuthorizationException;
         }
 
-        if ($request->user()->markEmailAsVerified()) {
-            event(new Verified($request->user()));
+        if ($user->markEmailAsVerified()) {
+            event(new Verified($user));
         }
 
         $responseData = [
